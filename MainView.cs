@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Widget;
+using Xamarin.Forms;
 
 namespace QrData
 {
@@ -13,6 +14,7 @@ namespace QrData
             dialog = new AlertDialog.Builder(activity);
             dialog.SetTitle("注意");
             dialog.SetPositiveButton("OK", (sender, args) => {});
+            Xamarin.Forms.Application.Current.MainPage.DisplayAlert("My Alert", "My message.", "OK");
         }
 
         public void ShowMessage(int type)

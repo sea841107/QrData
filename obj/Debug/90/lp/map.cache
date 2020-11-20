@@ -1,3 +1,4 @@
+FormsViewGroup
 Xamarin.AndroidX.Activity
 Xamarin.AndroidX.Annotation
 Xamarin.AndroidX.AppCompat.AppCompatResources
@@ -41,6 +42,8 @@ Xamarin.AndroidX.VersionedParcelable
 Xamarin.AndroidX.ViewPager
 Xamarin.AndroidX.ViewPager2
 Xamarin.Essentials
+Xamarin.Forms.Platform.Android
+Xamarin.Forms.Platform
 Xamarin.Google.Android.Material
 Xamarin.Google.Guava.ListenableFuture
 Xamarin.GooglePlayServices.Base

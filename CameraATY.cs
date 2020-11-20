@@ -25,7 +25,7 @@ namespace QrData
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            SetContentView(Resource.Layout.main);
+            SetContentView(Resource.Layout.camera);
             var permissions = new string[] { Manifest.Permission.Camera };
             if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.Camera) != (int)Permission.Granted)
             {

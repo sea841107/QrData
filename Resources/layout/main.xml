@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -7,9 +9,10 @@
         android:orientation="horizontal"
         android:minWidth="25px"
         android:minHeight="25px"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/buyerIdLayout">
+        android:id="@+id/buyerIdLayout"
+        android:gravity="center">
         <TextView
             android:text="統編"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -28,59 +31,15 @@
             android:singleLine="true"
             android:textColor="#ff0000ff"
             android:hint="00000000" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:minWidth="25px"
-        android:minHeight="25px"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/cameraLayout">
-        <SurfaceView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/surfaceView"
-            android:minHeight="200px"
-            android:minWidth="200px" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:minWidth="25px"
-        android:minHeight="25px"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonLayout">
         <Button
-            android:text="主頁"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/mainButton"
-            android:textSize="50px"
-            android:maxWidth="250px"
-            android:minWidth="250px"
-            android:background="#7fff000a"
-            android:typeface="sans" />
-        <Button
-            android:text="掃描"
+            android:text="開始掃描"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/scanButton"
-            android:textSize="50px"
-            android:maxWidth="250px"
-            android:minWidth="250px"
-            android:translationX="10px"
-            android:background="#7fff000a"
-            android:typeface="sans" />
-        <Button
-            android:text="資料"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/dataButton"
-            android:textSize="50px"
-            android:maxWidth="250px"
-            android:minWidth="250px"
-            android:translationX="20px"
-            android:background="#7fff000a"
-            android:typeface="sans" />
+            android:textSize="60px"
+            android:textStyle="bold"
+            android:typeface="serif"
+            android:layout_gravity="center"
+            android:textColor="#ffc80000" />
     </LinearLayout>
 </LinearLayout>

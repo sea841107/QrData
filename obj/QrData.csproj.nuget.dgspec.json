@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Users\\DD\\Desktop\\App\\QrData\\QrData.csproj": {}
+    "D:\\Users\\DD\\Desktop\\QrData\\QrData.csproj": {}
   },
   "projects": {
-    "D:\\Users\\DD\\Desktop\\App\\QrData\\QrData.csproj": {
+    "D:\\Users\\DD\\Desktop\\QrData\\QrData.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Users\\DD\\Desktop\\App\\QrData\\QrData.csproj",
+        "projectUniqueName": "D:\\Users\\DD\\Desktop\\QrData\\QrData.csproj",
         "projectName": "QrData",
-        "projectPath": "D:\\Users\\DD\\Desktop\\App\\QrData\\QrData.csproj",
+        "projectPath": "D:\\Users\\DD\\Desktop\\QrData\\QrData.csproj",
         "packagesPath": "C:\\Users\\DD\\.nuget\\packages\\",
-        "outputPath": "D:\\Users\\DD\\Desktop\\App\\QrData\\obj\\",
+        "outputPath": "D:\\Users\\DD\\Desktop\\QrData\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "fallbackFolders": [
@@ -38,6 +38,14 @@
       "frameworks": {
         "monoandroid90": {
           "dependencies": {
+            "Microsoft.NETCore.UniversalWindowsPlatform": {
+              "target": "Package",
+              "version": "[6.2.10, )"
+            },
+            "NETStandard.Library": {
+              "target": "Package",
+              "version": "[2.0.3, )"
+            },
             "Xamarin.Android.Support.Core.Utils": {
               "target": "Package",
               "version": "[28.0.0.3, )"
@@ -77,6 +85,10 @@
             "Xamarin.Essentials": {
               "target": "Package",
               "version": "[1.5.3.2, )"
+            },
+            "Xamarin.Forms": {
+              "target": "Package",
+              "version": "[4.8.0.1687, )"
             },
             "Xamarin.Google.Android.Material": {
               "target": "Package",

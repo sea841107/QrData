@@ -11,9 +11,10 @@ namespace QrData
     public class MainActivity : AppCompatActivity
     {
         MainView mainView;
-        protected override void OnCreate(Bundle savedInstanceState)
+        protected override void OnCreate(Bundle bundle)
         {
-            base.OnCreate(savedInstanceState);
+            base.OnCreate(bundle);
+            Xamarin.Forms.Forms.Init(this, bundle);
             SetContentView(Resource.Layout.main);
             mainView = new MainView(this);
             Button scanButton = FindViewById<Button>(Resource.Id.scanButton);
