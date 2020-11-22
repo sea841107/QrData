@@ -1,54 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <TextView
-        android:text="109/01"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@+id/dateText"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="25px"
         android:minHeight="25px"
-        android:id="@+id/textView1" />
+        android:id="@+id/dateText" />
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:minWidth="25px"
         android:minHeight="25px"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/linearLayout1">
-        <TextView
-            android:text="總計額"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView2"
-            android:textColor="#ff0000ff"
-            android:translationX="50px" />
-        <TextView
-            android:text="未稅額"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView3"
-            android:textColor="#ff0000ff"
-            android:translationX="100px" />
-        <TextView
-            android:text="稅金"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView4"
-            android:textColor="#ff0000ff"
-            android:translationX="150px"/>
+        android:id="@+id/amountLayout"
+        android:layout_marginLeft="20px">
         <TextView
             android:text="張數"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView5"
-             android:textColor="#ff0000ff"
-            android:translationX="200px" />
+            android:id="@+id/amountTitle"
+            android:textColor="#ff0000ff"
+            android:gravity="center" />
+        <TextView
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/amountValue"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="#ffff0000" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/totalLayout"
+        android:layout_marginLeft="70px">
+        <TextView
+            android:text="總計額"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/totalTitle"
+            android:textColor="#ff0000ff"
+            android:gravity="center" />
+        <TextView
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/totalValue"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="#ffff0000" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/unTaxedLayout"
+        android:layout_marginLeft="70px">
+        <TextView
+            android:text="未稅額"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/unTaxedTitle"
+            android:textColor="#ff0000ff"
+            android:gravity="center" />
+        <TextView
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/unTaxedValue"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="#ffff0000" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/taxLayout"
+        android:layout_marginLeft="70px">
+        <TextView
+            android:text="稅金"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/taxTitle"
+            android:textColor="#ff0000ff"
+            android:gravity="center" />
+        <TextView
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/taxValue"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="#ffff0000" />
     </LinearLayout>
 </LinearLayout>

@@ -10,6 +10,7 @@
         public enum ResultType
         {
             Success,
+            Delete,
             UuidExist, // 發票已存在
             BuyerIdUnvalid, // 無效的統編
             BuyerIdEmpty, // 發票無買方統編

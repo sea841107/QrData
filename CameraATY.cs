@@ -40,6 +40,13 @@ namespace QrData
             surfaceView = (SurfaceView)FindViewById(Resource.Id.surfaceView);
             surfaceView.Holder.AddCallback(this);
             barcodeDetector.SetProcessor(this);
+
+            var realData = "HB841043771091107218400000000000002250000000054914283";
+            var result = MainData.SetData(realData);
+            var intent = new Intent(this, typeof(MainActivity));
+            intent.PutExtra("ResultType", (int)result);
+            SetResult(Result.Ok, intent);
+            Finish();
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
@@ -71,7 +78,7 @@ namespace QrData
                 var intent = new Intent(this, typeof(MainActivity));
                 intent.PutExtra("ResultType", (int)result);
                 SetResult(Result.Ok, intent);
-                //Finish();
+                Finish();
             }
         }
 

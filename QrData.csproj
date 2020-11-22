@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraATY.cs" />
+    <Compile Include="QrDataAdapter.cs" />
     <Compile Include="MainView.cs" />
     <Compile Include="Variable.cs" />
     <Compile Include="MainActivity.cs" />

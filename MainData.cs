@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace QrData
 {
-    struct DetailStruct
+    public struct DetailStruct
     {
         public DetailStruct(string year, string month, string date, string random,
             int price, int unTaxedPrice, int tax, string buyerId, string sellerId)
@@ -29,7 +29,7 @@ namespace QrData
         public string SellerId { get; }
     }
 
-    struct MonthStruct
+    public struct MonthStruct
     {
         public MonthStruct(Dictionary<string, DetailStruct> detailDic)
         {
@@ -51,7 +51,7 @@ namespace QrData
         }
     }
 
-    struct BuyerStruct
+    public struct BuyerStruct
     {
         public BuyerStruct(Dictionary<string, MonthStruct> monthDic)
         {
@@ -64,8 +64,8 @@ namespace QrData
 
     public static class MainData
     {
-        static Dictionary<string, BuyerStruct> BuyerDic = new Dictionary<string, BuyerStruct>();
-        
+        public static Dictionary<string, BuyerStruct> BuyerDic = new Dictionary<string, BuyerStruct>();
+
         public static Variable.ResultType SetData(string data)
         {
             if (data != null)
@@ -93,9 +93,9 @@ namespace QrData
                 if (BuyerDic.ContainsKey(buyerId))
                 {
                     var buyerStruct = BuyerDic.GetValueOrDefault(buyerId);
-                    if (buyerStruct.MonthDic.ContainsKey(month))
+                    if (buyerStruct.MonthDic.ContainsKey(year + "/" + month))
                     {
-                        var monthStruct = buyerStruct.MonthDic.GetValueOrDefault(month);
+                        var monthStruct = buyerStruct.MonthDic.GetValueOrDefault(year + "/" + month);
                         if (monthStruct.DetailDic.ContainsKey(uuid))
                         {
                             return Variable.ResultType.UuidExist;
@@ -128,7 +128,7 @@ namespace QrData
                         monthStruct.Tax += tax;
                         monthStruct.Amount += 1;
                         buyerStruct.Amount += 1;
-                        monthDic.Add(month, monthStruct);
+                        monthDic.Add(year + "/" + month, monthStruct);
                         detailDic.Add(uuid, detailStruct);
                     }
                 }
@@ -142,11 +142,17 @@ namespace QrData
                     monthStruct.Amount += 1;
                     buyerStruct.Amount += 1;
                     BuyerDic.Add(buyerId, buyerStruct);
-                    monthDic.Add(month, monthStruct);
+                    monthDic.Add(year + "/" + month, monthStruct);
                     detailDic.Add(uuid, detailStruct);
                 }
             }
             return Variable.ResultType.Success;
+        }
+
+        public static Dictionary<string, MonthStruct> GetAllData()
+        {
+            var buyerStruct = BuyerDic.GetValueOrDefault(Variable.CurBuyerId);
+            return buyerStruct.MonthDic;
         }
     }
 }
