@@ -77,11 +77,9 @@ namespace QrData
                 string random = data.Substring(17, 4);
                 int price = Convert.ToInt32(data.Substring(29, 8), 16);
                 int unTaxedPrice = (int)MathF.Round(price / 1.05f);
-                int tax = (int)MathF.Round(unTaxedPrice * 0.05f);
+                int tax = (int)MathF.Round(price / 1.05f * 0.05f);
                 string buyerId = data.Substring(37, 8);
                 string sellerId = data.Substring(45, 8);
-                var detailDic = new Dictionary<string, DetailStruct>();
-                var monthDic = new Dictionary<string, MonthStruct>();
                 DetailStruct detailStruct = new DetailStruct(year, month, date, random, price,
                     unTaxedPrice, tax, buyerId, sellerId);
                 //if (buyerId == Variable.EmptyId)
@@ -92,10 +90,10 @@ namespace QrData
                     return Variable.ResultType.TaxExceed500;
                 if (BuyerDic.ContainsKey(buyerId))
                 {
-                    var buyerStruct = BuyerDic.GetValueOrDefault(buyerId);
+                    var buyerStruct = BuyerDic[buyerId];
                     if (buyerStruct.MonthDic.ContainsKey(year + "/" + month))
                     {
-                        var monthStruct = buyerStruct.MonthDic.GetValueOrDefault(year + "/" + month);
+                        var monthStruct = buyerStruct.MonthDic[year + "/" + month];
                         if (monthStruct.DetailDic.ContainsKey(uuid))
                         {
                             return Variable.ResultType.UuidExist;
@@ -110,6 +108,8 @@ namespace QrData
                                 monthStruct.Amount += 1;
                                 buyerStruct.Amount += 1;
                                 monthStruct.DetailDic.Add(uuid, detailStruct);
+                                buyerStruct.MonthDic[year + "/" + month] = monthStruct;
+                                BuyerDic[buyerId] = buyerStruct;
                             }
                             else
                             {
@@ -122,28 +122,29 @@ namespace QrData
                     }
                     else
                     {
-                        MonthStruct monthStruct = new MonthStruct(detailDic);
+                        MonthStruct monthStruct = new MonthStruct(new Dictionary<string, DetailStruct>());
                         monthStruct.Price += price;
                         monthStruct.UnTaxedPrice += unTaxedPrice;
                         monthStruct.Tax += tax;
                         monthStruct.Amount += 1;
                         buyerStruct.Amount += 1;
-                        monthDic.Add(year + "/" + month, monthStruct);
-                        detailDic.Add(uuid, detailStruct);
+                        buyerStruct.MonthDic.Add(year + "/" + month, monthStruct);
+                        monthStruct.DetailDic.Add(uuid, detailStruct);
+                        BuyerDic[buyerId] = buyerStruct;
                     }
                 }
                 else
                 {
-                    BuyerStruct buyerStruct = new BuyerStruct(monthDic);
-                    MonthStruct monthStruct = new MonthStruct(detailDic);
+                    BuyerStruct buyerStruct = new BuyerStruct(new Dictionary<string, MonthStruct>());
+                    MonthStruct monthStruct = new MonthStruct(new Dictionary<string, DetailStruct>());
                     monthStruct.Price += price;
                     monthStruct.UnTaxedPrice += unTaxedPrice;
                     monthStruct.Tax += tax;
                     monthStruct.Amount += 1;
                     buyerStruct.Amount += 1;
                     BuyerDic.Add(buyerId, buyerStruct);
-                    monthDic.Add(year + "/" + month, monthStruct);
-                    detailDic.Add(uuid, detailStruct);
+                    buyerStruct.MonthDic.Add(year + "/" + month, monthStruct);
+                    monthStruct.DetailDic.Add(uuid, detailStruct);
                 }
             }
             return Variable.ResultType.Success;
@@ -151,7 +152,7 @@ namespace QrData
 
         public static Dictionary<string, MonthStruct> GetAllData()
         {
-            var buyerStruct = BuyerDic.GetValueOrDefault(Variable.CurBuyerId);
+            var buyerStruct = BuyerDic[Variable.CurBuyerId];
             return buyerStruct.MonthDic;
         }
     }

@@ -1,85 +1,84 @@
-﻿using System.Collections.Generic;
-using Android.App;
+﻿using Android.App;
 using Android.Widget;
-using Android.Views;
 using Android.Content;
-using Java.Lang;
 
 namespace QrData
 {
     public class MainView
     {
-        MainActivity activity;
         AlertDialog.Builder dialog;
         ListView listView;
         QrDataAdapter adapter;
-        public MainView(MainActivity activity)
+        public MainView()
         {
-            this.activity = activity;
             SetupUI();
             SetupListView();
             SetupDialog();
         }
 
-        public void ShowMessage(int type)
+        public void ShowMessage(Variable.ResultType type)
         {
+            dialog = new AlertDialog.Builder(MainActivity.Instance);
+            dialog.SetTitle("注意");
+            dialog.SetPositiveButton("OK", (sender, args) => { });
             string str;
             switch (type)
             {
-                case (int)Variable.ResultType.Success:
+                case Variable.ResultType.Success:
                     str = "掃描成功！";
                     break;
-                case (int)Variable.ResultType.Delete:
+                case Variable.ResultType.Delete:
                     str = "確定要清空此資料？";
                     break;
-                case (int)Variable.ResultType.UuidExist:
+                case Variable.ResultType.UuidExist:
                     str = "此發票已掃描過！";
                     break;
-                case (int)Variable.ResultType.BuyerIdUnvalid:
-                    str = "請輸入長度8位的統編！";
+                case Variable.ResultType.BuyerIdUnvalid:
+                    str = "請輸入長度8位的有效統編！";
                     break;
-                case (int)Variable.ResultType.BuyerIdEmpty:
+                case Variable.ResultType.BuyerIdEmpty:
                     str = "此發票無統編！";
                     break;
-                case (int)Variable.ResultType.BuyerIdNotMatch:
+                case Variable.ResultType.BuyerIdNotMatch:
                     str = "此發票的統編與輸入的統編不一樣！";
                     break;
-                case (int)Variable.ResultType.TaxExceed500:
+                case Variable.ResultType.TaxExceed500:
                     str = "此發票稅額超過500元！";
                     break;
-                case (int)Variable.ResultType.TaxOffsetExceed2:
+                case Variable.ResultType.TaxOffsetExceed2:
                     str = "累計稅額與總計稅額差超過2元！";
                     break;
                 default:
                     str = "測試用訊息！";
                     break;
             }
-            if (type == (int)Variable.ResultType.Success)
-            {
-                Toast.MakeText(activity, str, ToastLength.Short).Show();
-            }
-            else
-            {
-                dialog.SetMessage(str);
-                dialog.Show();
-            }
+            //if (type == Variable.ResultType.Success)
+            //{
+            //    Toast.MakeText(MainActivity.Instance, str, ToastLength.Short).Show();
+            //}
+            //else
+            //{
+            //    dialog.SetMessage(str);
+            //    dialog.Show();
+            //}
+            Toast.MakeText(MainActivity.Instance, str, ToastLength.Short).Show();
         }
 
         void SetupUI()
         {
-            Button scanButton = activity.FindViewById<Button>(Resource.Id.scanButton);
-            EditText idEditText = activity.FindViewById<EditText>(Resource.Id.buyerIdText);
+            Button scanButton = MainActivity.Instance.FindViewById<Button>(Resource.Id.scanButton);
+            EditText idEditText = MainActivity.Instance.FindViewById<EditText>(Resource.Id.buyerIdText);
             scanButton.Click += (sender, e) =>
             {
                 if (idEditText.Text == "" || idEditText.Text.Length != 8)
                 {
-                    ShowMessage((int)Variable.ResultType.BuyerIdUnvalid);
+                    ShowMessage(Variable.ResultType.BuyerIdUnvalid);
                 }
                 else
                 {
                     Variable.CurBuyerId = idEditText.Text;
-                    var intentCameraATY = new Intent(activity, typeof(CameraATY));
-                    activity.StartActivityForResult(intentCameraATY, (int)Variable.RequestCode.Camera);
+                    var intentCameraATY = new Intent(MainActivity.Instance, typeof(CameraATY));
+                    MainActivity.Instance.StartActivityForResult(intentCameraATY, (int)Variable.RequestCode.Camera);
                 }
 
             };
@@ -87,18 +86,18 @@ namespace QrData
 
         void SetupListView()
         {
-            adapter = new QrDataAdapter(activity, Resource.Id.dateText);
-            listView = (ListView)activity.FindViewById(Resource.Id.listView);
+            adapter = new QrDataAdapter(MainActivity.Instance, Resource.Id.dateText);
+            listView = (ListView)MainActivity.Instance.FindViewById(Resource.Id.listView);
             listView.Adapter = adapter;
             listView.ItemLongClick += (sender, e) =>
             {
-                ShowMessage((int)Variable.ResultType.Delete);
+                ShowMessage(Variable.ResultType.Delete);
             };
         }
 
         void SetupDialog()
         {
-            dialog = new AlertDialog.Builder(activity);
+            dialog = new AlertDialog.Builder(MainActivity.Instance);
             dialog.SetTitle("注意");
             dialog.SetPositiveButton("OK", (sender, args) => { });
         }

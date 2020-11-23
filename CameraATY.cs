@@ -1,4 +1,6 @@
-﻿using Android;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Android;
 using Android.App;
 using Android.OS;
 using Android.Content.PM;
@@ -21,32 +23,27 @@ namespace QrData
     {
         SurfaceView surfaceView;
         CameraSource cameraSource;
-
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.camera);
-            var permissions = new string[] { Manifest.Permission.Camera };
-            if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.Camera) != (int)Permission.Granted)
+            SetupCamera();
+            Start();
+            async void Start()
             {
-                ActivityCompat.RequestPermissions(this, permissions, (int)Variable.RequestCode.Camera);
+                await Task.Delay(3000);
+                MainActivity.Instance.OnResult(MainData.SetData(Variable.FakeData[0]));
+                await Task.Delay(3000);
+                MainActivity.Instance.OnResult(MainData.SetData(Variable.FakeData[1]));
+                await Task.Delay(3000);
+                MainActivity.Instance.OnResult(MainData.SetData(Variable.FakeData[2]));
+                await Task.Delay(3000);
+                MainActivity.Instance.OnResult(MainData.SetData(Variable.FakeData[3]));
+                await Task.Delay(3000);
+                MainActivity.Instance.OnResult(MainData.SetData(Variable.FakeData[4]));
+                await Task.Delay(3000);
+                MainActivity.Instance.OnResult(MainData.SetData(Variable.FakeData[5]));
             }
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            WindowManager.DefaultDisplay.GetMetrics(displayMetrics);
-            int width = displayMetrics.WidthPixels;
-            int height = displayMetrics.HeightPixels;
-            BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this).SetBarcodeFormats(BarcodeFormat.QrCode).Build();
-            cameraSource = new CameraSource.Builder(this, barcodeDetector).SetRequestedPreviewSize(width, height).SetFacing(CameraFacing.Back).SetAutoFocusEnabled(true).Build();
-            surfaceView = (SurfaceView)FindViewById(Resource.Id.surfaceView);
-            surfaceView.Holder.AddCallback(this);
-            barcodeDetector.SetProcessor(this);
-
-            var realData = "HB841043771091107218400000000000002250000000054914283";
-            var result = MainData.SetData(realData);
-            var intent = new Intent(this, typeof(MainActivity));
-            intent.PutExtra("ResultType", (int)result);
-            SetResult(Result.Ok, intent);
-            Finish();
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
@@ -99,6 +96,24 @@ namespace QrData
         public void SurfaceDestroyed(ISurfaceHolder holder)
         {
             cameraSource.Stop();
+        }
+
+        void SetupCamera()
+        {
+            var permissions = new string[] { Manifest.Permission.Camera };
+            if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.Camera) != (int)Permission.Granted)
+            {
+                ActivityCompat.RequestPermissions(this, permissions, (int)Variable.RequestCode.Camera);
+            }
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            WindowManager.DefaultDisplay.GetMetrics(displayMetrics);
+            int width = displayMetrics.WidthPixels;
+            int height = displayMetrics.HeightPixels;
+            BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this).SetBarcodeFormats(BarcodeFormat.QrCode).Build();
+            cameraSource = new CameraSource.Builder(this, barcodeDetector).SetRequestedPreviewSize(width, height).SetFacing(CameraFacing.Back).SetAutoFocusEnabled(true).Build();
+            surfaceView = (SurfaceView)FindViewById(Resource.Id.surfaceView);
+            surfaceView.Holder.AddCallback(this);
+            barcodeDetector.SetProcessor(this);
         }
     }
 }

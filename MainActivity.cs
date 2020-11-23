@@ -9,32 +9,31 @@ namespace QrData
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : AppCompatActivity
     {
+        public MainActivity() {}
+        private static MainActivity instance;
+        public static MainActivity Instance { get { return instance; } }
+
         MainView mainView;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.main);
-            mainView = new MainView(this);
+            instance = this;
+            mainView = new MainView();
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent intent)
         {
             base.OnActivityResult(requestCode, resultCode, intent);
-            if (resultCode == Result.Ok)
+        }
+
+        public void OnResult(Variable.ResultType type)
+        {
+            mainView.ShowMessage(type);
+            if (type == Variable.ResultType.Success)
             {
-                var data = intent.GetBundleExtra("ResultType");
-                switch (requestCode)
-                {
-                    case (int)Variable.RequestCode.Camera:
-                        mainView.ShowMessage((int)data);
-                        break;
-                    default:
-                        break;
-                }
-                if ((int)data == (int)Variable.ResultType.Success)
-                {
-                    mainView.UpdateListView();
-                }
+                mainView.UpdateListView();
             }
         }
     }
