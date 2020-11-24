@@ -29,7 +29,8 @@ namespace QrData
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.camera);
             SetupCamera();
-            FakeScan();
+            if (Variable.FakeMode)
+                FakeScan();
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
@@ -65,10 +66,7 @@ namespace QrData
                 {
                     var realData = QRCode0[0] == '*' ? QRCode1 : QRCode0;
                     var result = MainData.SetData(realData);
-                    var intent = new Intent(this, typeof(MainActivity));
-                    intent.PutExtra("ResultType", (int)result);
-                    SetResult(Result.Ok, intent);
-                    Finish();
+                    MainActivity.Instance.OnResult(result);
                 }
             }
         }

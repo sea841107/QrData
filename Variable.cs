@@ -6,7 +6,7 @@
         readonly public static string EmptyId = "00000000"; // 空白統編
         readonly public static int MaxTax = 500; // 最大稅額
         readonly public static int MaxTaxOffset = 2; // 最大稅額差
-        readonly public static bool FakeMode = true;
+        readonly public static bool FakeMode = false;
         readonly public static string[] FakeData = {
             // 編號(8)+日期(7)+隨機碼(4)+未稅額16進位(8)+總計額16進位(8)+買方統編(8)+賣方統編(8)
             "AA000000001100101123400000000000002251234567887654321",
