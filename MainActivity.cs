@@ -28,10 +28,15 @@ namespace QrData
             base.OnActivityResult(requestCode, resultCode, intent);
         }
 
+        public override void OnBackPressed()
+        {
+            mainView.ShowMessage(Variable.ResultType.LeaveApp, null);
+        }
+
         public void OnResult(Variable.ResultType type)
         {
-            mainView.ShowMessage(type);
-            if (type == Variable.ResultType.Success)
+            mainView.ShowMessage(type, null);
+            if (type == Variable.ResultType.Success || type == Variable.ResultType.TaxOffsetExceed2)
             {
                 mainView.UpdateListView();
             }

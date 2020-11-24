@@ -37,17 +37,19 @@ namespace QrData
             Price = 0;
             UnTaxedPrice = 0;
             Tax = 0;
+            ToLimit = false;
             DetailDic = detailDic;
         }
         public int Amount { get; set; }
         public int Price { get; set; }
         public int UnTaxedPrice { get; set; }
         public int Tax { get; set; }
+        public bool ToLimit { get; set; }
         public Dictionary<string, DetailStruct> DetailDic { get; }
         public int CalcTaxOffset()
         {
             int pureTax = (int)MathF.Round(Price / 1.05f * 0.05f);
-            return pureTax - Tax;
+            return Tax - pureTax;
         }
     }
 
@@ -82,8 +84,8 @@ namespace QrData
                 string sellerId = data.Substring(45, 8);
                 DetailStruct detailStruct = new DetailStruct(year, month, date, random, price,
                     unTaxedPrice, tax, buyerId, sellerId);
-                //if (buyerId == Variable.EmptyId)
-                //    return Variable.ResultType.BuyerIdEmpty;
+                if (buyerId == Variable.EmptyId)
+                    return Variable.ResultType.BuyerIdEmpty;
                 if (buyerId != Variable.CurBuyerId)
                     return Variable.ResultType.BuyerIdNotMatch;
                 if (tax > Variable.MaxTax)
@@ -91,9 +93,9 @@ namespace QrData
                 if (BuyerDic.ContainsKey(buyerId))
                 {
                     var buyerStruct = BuyerDic[buyerId];
-                    if (buyerStruct.MonthDic.ContainsKey(year + "/" + month))
+                    if (buyerStruct.MonthDic.ContainsKey(year + month))
                     {
-                        var monthStruct = buyerStruct.MonthDic[year + "/" + month];
+                        var monthStruct = buyerStruct.MonthDic[year + month];
                         if (monthStruct.DetailDic.ContainsKey(uuid))
                         {
                             return Variable.ResultType.UuidExist;
@@ -108,7 +110,7 @@ namespace QrData
                                 monthStruct.Amount += 1;
                                 buyerStruct.Amount += 1;
                                 monthStruct.DetailDic.Add(uuid, detailStruct);
-                                buyerStruct.MonthDic[year + "/" + month] = monthStruct;
+                                buyerStruct.MonthDic[year + month] = monthStruct;
                                 BuyerDic[buyerId] = buyerStruct;
                             }
                             else
@@ -116,6 +118,8 @@ namespace QrData
                                 monthStruct.Price -= price;
                                 monthStruct.UnTaxedPrice -= unTaxedPrice;
                                 monthStruct.Tax -= tax;
+                                monthStruct.ToLimit = true;
+                                buyerStruct.MonthDic[year + month] = monthStruct;
                                 return Variable.ResultType.TaxOffsetExceed2;
                             }
                         }
@@ -128,7 +132,7 @@ namespace QrData
                         monthStruct.Tax += tax;
                         monthStruct.Amount += 1;
                         buyerStruct.Amount += 1;
-                        buyerStruct.MonthDic.Add(year + "/" + month, monthStruct);
+                        buyerStruct.MonthDic.Add(year + month, monthStruct);
                         monthStruct.DetailDic.Add(uuid, detailStruct);
                         BuyerDic[buyerId] = buyerStruct;
                     }
@@ -143,11 +147,23 @@ namespace QrData
                     monthStruct.Amount += 1;
                     buyerStruct.Amount += 1;
                     BuyerDic.Add(buyerId, buyerStruct);
-                    buyerStruct.MonthDic.Add(year + "/" + month, monthStruct);
+                    buyerStruct.MonthDic.Add(year + month, monthStruct);
                     monthStruct.DetailDic.Add(uuid, detailStruct);
                 }
             }
             return Variable.ResultType.Success;
+        }
+
+        public static Variable.ResultType DeleteData(string key)
+        {
+            var buyerStruct = BuyerDic[Variable.CurBuyerId];
+            if (buyerStruct.MonthDic.ContainsKey(key))
+            {
+                buyerStruct.MonthDic.Remove(key);
+                return Variable.ResultType.DeleteSuccess;
+            }
+            else
+                return Variable.ResultType.DeleteFailed;
         }
 
         public static Dictionary<string, MonthStruct> GetAllData()

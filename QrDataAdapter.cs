@@ -1,6 +1,9 @@
-﻿using Android.Widget;
+﻿using System;
+using Android.Widget;
 using Android.Views;
 using Android.Content;
+using Android.Graphics;
+using Android.Graphics.Drawables;
 
 namespace QrData
 {
@@ -22,11 +25,15 @@ namespace QrData
             TextView total = (TextView)convertView.FindViewById(Resource.Id.totalValue);
             TextView unTaxed = (TextView)convertView.FindViewById(Resource.Id.unTaxedValue);
             TextView tax = (TextView)convertView.FindViewById(Resource.Id.taxValue);
-            date.Text = item[0];
+            convertView.Id = Convert.ToInt32(item[0]);
+            convertView.SetBackgroundColor(Color.LightGoldenrodYellow);
+            date.Text = item[0].Substring(0, 3) + "/" + item[0][3..];
             amount.Text = item[1];
             total.Text = item[2];
             unTaxed.Text = item[3];
             tax.Text = item[4];
+            if (item[5] == "True")
+                convertView.SetBackgroundColor(Color.PaleVioletRed);
             return convertView;
         }
     }

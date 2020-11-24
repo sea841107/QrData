@@ -11,6 +11,7 @@ using Android.Runtime;
 using Android.Support.V4.App;
 using Android.Support.V4.Content;
 using Android.Content;
+using Android.Widget;
 using Android.Gms.Vision;
 using Android.Gms.Vision.Barcodes;
 using static Android.Gms.Vision.Detector;
@@ -28,22 +29,7 @@ namespace QrData
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.camera);
             SetupCamera();
-            Start();
-            async void Start()
-            {
-                await Task.Delay(3000);
-                MainActivity.Instance.OnResult(MainData.SetData(Variable.FakeData[0]));
-                await Task.Delay(3000);
-                MainActivity.Instance.OnResult(MainData.SetData(Variable.FakeData[1]));
-                await Task.Delay(3000);
-                MainActivity.Instance.OnResult(MainData.SetData(Variable.FakeData[2]));
-                await Task.Delay(3000);
-                MainActivity.Instance.OnResult(MainData.SetData(Variable.FakeData[3]));
-                await Task.Delay(3000);
-                MainActivity.Instance.OnResult(MainData.SetData(Variable.FakeData[4]));
-                await Task.Delay(3000);
-                MainActivity.Instance.OnResult(MainData.SetData(Variable.FakeData[5]));
-            }
+            FakeScan();
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
@@ -51,11 +37,16 @@ namespace QrData
             switch (requestCode)
             {
                 case (int)Variable.RequestCode.Camera:
-                    if (grantResults.Length > 0 && grantResults[0] == Permission.Denied)
+                    if (grantResults.Length > 0)
                     {
-                        var intent = new Intent(this, typeof(MainActivity));
-                        SetResult(Result.Canceled, intent);
-                        Finish();
+                        if (grantResults[0] == Permission.Granted)
+                            cameraSource.Start(surfaceView.Holder);
+                        else if (grantResults[0] == Permission.Denied)
+                        {
+                            var intent = new Intent(this, typeof(MainActivity));
+                            SetResult(Result.Canceled, intent);
+                            Finish();
+                        }
                     }
                     return;
                 default:
@@ -70,12 +61,15 @@ namespace QrData
             {
                 var QRCode0 = ((Barcode)qrcodes.ValueAt(0)).RawValue;
                 var QRCode1 = ((Barcode)qrcodes.ValueAt(1)).RawValue;
-                var realData = QRCode0[0] == '*' ? QRCode1 : QRCode0;
-                var result = MainData.SetData(realData);
-                var intent = new Intent(this, typeof(MainActivity));
-                intent.PutExtra("ResultType", (int)result);
-                SetResult(Result.Ok, intent);
-                Finish();
+                if (QRCode0[0] == '*' || QRCode0[1] == '*')
+                {
+                    var realData = QRCode0[0] == '*' ? QRCode1 : QRCode0;
+                    var result = MainData.SetData(realData);
+                    var intent = new Intent(this, typeof(MainActivity));
+                    intent.PutExtra("ResultType", (int)result);
+                    SetResult(Result.Ok, intent);
+                    Finish();
+                }
             }
         }
 
@@ -110,10 +104,30 @@ namespace QrData
             int width = displayMetrics.WidthPixels;
             int height = displayMetrics.HeightPixels;
             BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this).SetBarcodeFormats(BarcodeFormat.QrCode).Build();
-            cameraSource = new CameraSource.Builder(this, barcodeDetector).SetRequestedPreviewSize(width, height).SetFacing(CameraFacing.Back).SetAutoFocusEnabled(true).Build();
+            CameraSource.Builder builder = new CameraSource.Builder(this, barcodeDetector);
+            builder.SetFacing(CameraFacing.Back);
+            builder.SetAutoFocusEnabled(true);
+            builder.SetRequestedPreviewSize(1280, 720);
+            cameraSource = builder.Build();
             surfaceView = (SurfaceView)FindViewById(Resource.Id.surfaceView);
             surfaceView.Holder.AddCallback(this);
+            surfaceView.LayoutParameters = new RelativeLayout.LayoutParams(width, width / 9 * 16);
             barcodeDetector.SetProcessor(this);
+        }
+
+        void FakeScan()
+        {
+            int count = 0;
+            Start();
+            async void Start()
+            {
+                await Task.Delay(2000);
+                var result = MainData.SetData(Variable.FakeData[count]);
+                MainActivity.Instance.OnResult(result);
+                count++;
+                if (count < Variable.FakeData.Length)
+                    Start();
+            }
         }
     }
 }
