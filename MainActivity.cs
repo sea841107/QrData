@@ -3,7 +3,6 @@ using Android.OS;
 using Android.Support.V7.App;
 using Android.Content;
 
-
 namespace QrData
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
@@ -26,6 +25,11 @@ namespace QrData
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent intent)
         {
             base.OnActivityResult(requestCode, resultCode, intent);
+            if (intent != null && intent.HasExtra("Error"))
+            {
+                string error = intent.GetStringExtra("Error");
+                mainView.ShowMessage(Variable.ResultType.Default, error);
+            }
         }
 
         public override void OnBackPressed()

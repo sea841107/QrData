@@ -11,7 +11,7 @@
         android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/mainLayout"
+        android:id="@+id/idLayout"
         android:gravity="center">
         <TextView
             android:text="統編"
@@ -30,12 +30,32 @@
             android:textSize="60px"
             android:singleLine="true"
             android:textColor="#ff0000ff"
-            android:hint="00000000" />
+            android:hint="00000000"
+            android:maxLength="8" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonLayout"
+        android:gravity="center">
         <Button
             android:text="開始掃描"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/scanButton"
+            android:textSize="60px"
+            android:textStyle="bold"
+            android:typeface="serif"
+            android:layout_gravity="center"
+            android:textColor="#ffc80000" />
+        <Button
+            android:text="一鍵清空"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/clearButton"
             android:textSize="60px"
             android:textStyle="bold"
             android:typeface="serif"

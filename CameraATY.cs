@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Android;
 using Android.App;
 using Android.OS;
@@ -58,16 +57,29 @@ namespace QrData
         public void ReceiveDetections(Detections detections)
         {
             SparseArray qrcodes = detections.DetectedItems;
-            if (qrcodes.Size() == 2)
+            try
             {
-                var QRCode0 = ((Barcode)qrcodes.ValueAt(0)).RawValue;
-                var QRCode1 = ((Barcode)qrcodes.ValueAt(1)).RawValue;
-                if (QRCode0[0] == '*' || QRCode0[1] == '*')
+                if (qrcodes.Size() == 2)
                 {
-                    var realData = QRCode0[0] == '*' ? QRCode1 : QRCode0;
-                    var result = MainData.SetData(realData);
-                    MainActivity.Instance.OnResult(result);
+                    var QRCode0 = ((Barcode)qrcodes.ValueAt(0)).RawValue;
+                    var QRCode1 = ((Barcode)qrcodes.ValueAt(1)).RawValue;
+                    if (QRCode0[0] == '*' || QRCode1[0] == '*')
+                    {
+                        RunOnUiThread(() =>
+                        {
+                            var realData = QRCode0[0] == '*' ? QRCode1 : QRCode0;
+                            var result = MainData.SetData(realData);
+                            MainActivity.Instance.OnResult(result);
+                        });
+                    }
                 }
+            }
+            catch (System.Exception e)
+            {
+                var intent = new Intent(this, typeof(MainActivity));
+                intent.PutExtra("Error", e.ToString());
+                SetResult(Result.Ok, intent);
+                Finish();
             }
         }
 
@@ -102,11 +114,7 @@ namespace QrData
             int width = displayMetrics.WidthPixels;
             int height = displayMetrics.HeightPixels;
             BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this).SetBarcodeFormats(BarcodeFormat.QrCode).Build();
-            CameraSource.Builder builder = new CameraSource.Builder(this, barcodeDetector);
-            builder.SetFacing(CameraFacing.Back);
-            builder.SetAutoFocusEnabled(true);
-            builder.SetRequestedPreviewSize(1280, 720);
-            cameraSource = builder.Build();
+            cameraSource = new CameraSource.Builder(this, barcodeDetector).SetRequestedPreviewSize(1280, 720).SetFacing(CameraFacing.Back).SetAutoFocusEnabled(true).Build();
             surfaceView = (SurfaceView)FindViewById(Resource.Id.surfaceView);
             surfaceView.Holder.AddCallback(this);
             surfaceView.LayoutParameters = new RelativeLayout.LayoutParams(width, width / 9 * 16);

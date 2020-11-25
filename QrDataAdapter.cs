@@ -3,7 +3,6 @@ using Android.Widget;
 using Android.Views;
 using Android.Content;
 using Android.Graphics;
-using Android.Graphics.Drawables;
 
 namespace QrData
 {

@@ -40,12 +40,12 @@ namespace QrData
                 case Variable.ResultType.Success:
                     message = "掃描成功！";
                     break;
-                case Variable.ResultType.Delete:
-                    message = "確定要清空此資料？";
+                case Variable.ResultType.Clear:
+                    message = "確定要清空此筆資料？";
                     messageType = Variable.MessageType.Dialog;
                     dialogPositive = () =>
                     {
-                        var result = MainData.DeleteData(value);
+                        var result = MainData.ClearData(value);
                         UpdateListView();
                         ShowMessage(result, null);
                         return null;
@@ -55,10 +55,25 @@ namespace QrData
                         return null;
                     };
                     break;
-                case Variable.ResultType.DeleteSuccess:
+                case Variable.ResultType.ClearAll:
+                    message = "確定要清空全部資料？";
+                    messageType = Variable.MessageType.Dialog;
+                    dialogPositive = () =>
+                    {
+                        var result = MainData.ClearAllData();
+                        UpdateListView();
+                        ShowMessage(result, null);
+                        return null;
+                    };
+                    dialogNagative = () =>
+                    {
+                        return null;
+                    };
+                    break;
+                case Variable.ResultType.ClearSuccess:
                     message = "刪除成功！";
                     break;
-                case Variable.ResultType.DeleteFailed:
+                case Variable.ResultType.ClearFailed:
                     message = "刪除失敗！";
                     break;
                 case Variable.ResultType.UuidExist:
@@ -80,7 +95,7 @@ namespace QrData
                     message = "累計稅額與總計稅額差超過2元！";
                     break;
                 default:
-                    message = "測試用訊息！";
+                    message = value;
                     break;
             }
             switch (messageType)
@@ -98,7 +113,6 @@ namespace QrData
 
         public void ShowToast(string message)
         {
-
             Toast.MakeText(MainActivity.Instance, message, ToastLength.Short).Show();
         }
 
@@ -126,6 +140,7 @@ namespace QrData
         void SetupUI()
         {
             Button scanButton = MainActivity.Instance.FindViewById<Button>(Resource.Id.scanButton);
+            Button clearButton = MainActivity.Instance.FindViewById<Button>(Resource.Id.clearButton);
             EditText idEditText = MainActivity.Instance.FindViewById<EditText>(Resource.Id.buyerIdText);
             scanButton.Click += (sender, args) =>
             {
@@ -141,6 +156,10 @@ namespace QrData
                 }
 
             };
+            clearButton.Click += (sender, args) =>
+            {
+                ShowMessage(Variable.ResultType.ClearAll, null);
+            };
         }
 
         void SetupListView()
@@ -151,16 +170,16 @@ namespace QrData
             listView.ItemLongClick += (sender, args) =>
             {
                 string id = args.View.Id.ToString();
-                ShowMessage(Variable.ResultType.Delete, id);
+                ShowMessage(Variable.ResultType.Clear, id);
             };
         }
 
         public void UpdateListView()
         {
+            adapter.Clear();
             var allData = MainData.GetAllData();
             if (allData != null)
             {
-                adapter.Clear();
                 foreach (var data in allData.OrderBy(obj => obj.Key))
                 {
                     string[] dataStr = new string[6];

@@ -154,22 +154,32 @@ namespace QrData
             return Variable.ResultType.Success;
         }
 
-        public static Variable.ResultType DeleteData(string key)
+        public static Variable.ResultType ClearData(string key)
         {
             var buyerStruct = BuyerDic[Variable.CurBuyerId];
             if (buyerStruct.MonthDic.ContainsKey(key))
             {
                 buyerStruct.MonthDic.Remove(key);
-                return Variable.ResultType.DeleteSuccess;
+                return Variable.ResultType.ClearSuccess;
             }
             else
-                return Variable.ResultType.DeleteFailed;
+                return Variable.ResultType.ClearFailed;
+        }
+
+        public static Variable.ResultType ClearAllData()
+        {
+            BuyerDic.Clear();
+            return Variable.ResultType.ClearSuccess;
         }
 
         public static Dictionary<string, MonthStruct> GetAllData()
         {
-            var buyerStruct = BuyerDic[Variable.CurBuyerId];
-            return buyerStruct.MonthDic;
+            if (Variable.CurBuyerId != null && BuyerDic.ContainsKey(Variable.CurBuyerId))
+            {
+                var buyerStruct = BuyerDic[Variable.CurBuyerId];
+                return buyerStruct.MonthDic;
+            } else
+                return null;
         }
     }
 }
