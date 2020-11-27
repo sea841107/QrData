@@ -65,9 +65,11 @@ namespace QrData
                     var QRCode1 = ((Barcode)qrcodes.ValueAt(1)).RawValue;
                     if (QRCode0[0] == '*' || QRCode1[0] == '*')
                     {
+                        var realData = QRCode0[0] == '*' ? QRCode1 : QRCode0;
+                        if (Variable.CurQrCode == realData) return;
+                        Variable.CurQrCode = realData;
                         RunOnUiThread(() =>
                         {
-                            var realData = QRCode0[0] == '*' ? QRCode1 : QRCode0;
                             var result = MainData.SetData(realData);
                             MainActivity.Instance.OnResult(result);
                         });

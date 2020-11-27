@@ -3,6 +3,7 @@ using System.Linq;
 using Android.App;
 using Android.Widget;
 using Android.Content;
+using Android.Views.InputMethods;
 
 namespace QrData
 {
@@ -29,7 +30,8 @@ namespace QrData
                     messageType = Variable.MessageType.Dialog;
                     dialogPositive = () =>
                     {
-                        MainActivity.Instance.FinishAndRemoveTask();
+                        MainActivity.Instance.Finish();
+                        Environment.Exit(0);
                         return null;
                     };
                     dialogNagative = () =>
@@ -75,6 +77,9 @@ namespace QrData
                     break;
                 case Variable.ResultType.ClearFailed:
                     message = "刪除失敗！";
+                    break;
+                case Variable.ResultType.ClearBeforeEdit:
+                    message = "請先清空資料再修改統編！";
                     break;
                 case Variable.ResultType.UuidExist:
                     message = "此發票已掃描過！";
@@ -144,21 +149,40 @@ namespace QrData
             EditText idEditText = MainActivity.Instance.FindViewById<EditText>(Resource.Id.buyerIdText);
             scanButton.Click += (sender, args) =>
             {
-                if (idEditText.Text.Length != 8 || idEditText.Text == "" || idEditText.Text == Variable.EmptyId)
+                if (Variable.CheckIdValid(idEditText.Text))
                 {
-                    ShowMessage(Variable.ResultType.BuyerIdUnvalid, null);
+                    Variable.CurQrCode = "";
+                    Variable.CurBuyerId = idEditText.Text;
+                    Intent intent = new Intent(MainActivity.Instance, typeof(CameraATY));
+                    MainActivity.Instance.StartActivityForResult(intent, (int)Variable.RequestCode.Camera);
                 }
                 else
                 {
-                    Variable.CurBuyerId = idEditText.Text;
-                    var intentCameraATY = new Intent(MainActivity.Instance, typeof(CameraATY));
-                    MainActivity.Instance.StartActivityForResult(intentCameraATY, (int)Variable.RequestCode.Camera);
+                    ShowMessage(Variable.ResultType.BuyerIdUnvalid, null);
                 }
 
             };
             clearButton.Click += (sender, args) =>
             {
                 ShowMessage(Variable.ResultType.ClearAll, null);
+            };
+            idEditText.LongClick += (sender, args) =>
+            {
+                if (MainData.BuyerDic.Count > 0)
+                {
+                    ShowMessage(Variable.ResultType.ClearBeforeEdit, null);
+                    InputMethodManager imm = (InputMethodManager)MainActivity.Instance.GetSystemService(Context.InputMethodService);
+                    imm.HideSoftInputFromWindow(idEditText.WindowToken, 0);
+                }
+            };
+            idEditText.Click += (sender, args) =>
+            {
+                if (MainData.BuyerDic.Count > 0)
+                {
+                    ShowMessage(Variable.ResultType.ClearBeforeEdit, null);
+                    InputMethodManager imm = (InputMethodManager)MainActivity.Instance.GetSystemService(Context.InputMethodService);
+                    imm.HideSoftInputFromWindow(idEditText.WindowToken, 0);
+                }
             };
         }
 

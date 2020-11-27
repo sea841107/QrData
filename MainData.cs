@@ -160,6 +160,8 @@ namespace QrData
             if (buyerStruct.MonthDic.ContainsKey(key))
             {
                 buyerStruct.MonthDic.Remove(key);
+                if (buyerStruct.MonthDic.Count == 0)
+                    BuyerDic.Remove(Variable.CurBuyerId);
                 return Variable.ResultType.ClearSuccess;
             }
             else
@@ -174,7 +176,7 @@ namespace QrData
 
         public static Dictionary<string, MonthStruct> GetAllData()
         {
-            if (Variable.CurBuyerId != null && BuyerDic.ContainsKey(Variable.CurBuyerId))
+            if (BuyerDic.ContainsKey(Variable.CurBuyerId))
             {
                 var buyerStruct = BuyerDic[Variable.CurBuyerId];
                 return buyerStruct.MonthDic;

@@ -2,7 +2,8 @@
 {
     public static class Variable
     {
-        public static string CurBuyerId; // 輸入的統編
+        public static string CurBuyerId = ""; // 輸入的統編
+        public static string CurQrCode = "";
         readonly public static string EmptyId = "00000000"; // 空白統編
         readonly public static int MaxTax = 500; // 最大稅額
         readonly public static int MaxTaxOffset = 2; // 最大稅額差
@@ -31,6 +32,7 @@
             ClearAll,
             ClearSuccess,
             ClearFailed,
+            ClearBeforeEdit,
             UuidExist, // 發票已存在
             BuyerIdUnvalid, // 無效的統編
             BuyerIdEmpty, // 發票無買方統編
@@ -48,6 +50,16 @@
         public enum RequestCode
         {
             Camera = 1,
+        }
+
+        public static bool CheckIdValid(string id)
+        {
+            // 買方統編規則：長度須為8個字元、不能為空、不能為負數、不能是00000000
+            if (id.Length != 8 || id == "" || id[0] == '-' || id == EmptyId)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
