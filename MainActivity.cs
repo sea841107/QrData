@@ -13,6 +13,7 @@ namespace QrData
         public static MainActivity Instance { get { return instance; } }
 
         MainView mainView;
+        MainAudio mainAudio;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -20,6 +21,7 @@ namespace QrData
             SetContentView(Resource.Layout.main);
             instance = this;
             mainView = new MainView();
+            mainAudio = new MainAudio();
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent intent)
@@ -28,22 +30,23 @@ namespace QrData
             if (intent != null && intent.HasExtra("Error"))
             {
                 string error = intent.GetStringExtra("Error");
-                mainView.ShowMessage(Variable.ResultType.Default, error);
+                mainView.ShowMessage(new Variable.ResultStruct(Variable.ResultType.Default, error));
             }
         }
 
         public override void OnBackPressed()
         {
-            mainView.ShowMessage(Variable.ResultType.LeaveApp, null);
+            mainView.ShowMessage(new Variable.ResultStruct(Variable.ResultType.LeaveApp, null));
         }
 
-        public void OnResult(Variable.ResultType type)
+        public void OnResult(Variable.ResultStruct result)
         {
-            mainView.ShowMessage(type, null);
-            if (type == Variable.ResultType.Success || type == Variable.ResultType.TaxOffsetExceed2)
+            mainView.ShowMessage(result);
+            if (result.Type == Variable.ResultType.ScanSuccess || result.Type == Variable.ResultType.TaxOffsetExceed2)
             {
                 mainView.UpdateListView();
             }
+            mainAudio.PlaySound(result);
         }
     }
 }

@@ -3,17 +3,35 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
-        android:text="@+id/dateText"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
         android:minWidth="25px"
         android:minHeight="25px"
-        android:id="@+id/dateText"
-        android:textStyle="bold"
-        android:textColor="#ff000000"
-        android:layout_marginTop="30px" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dateLayout"
+        android:gravity="center">
+        <TextView
+            android:text="@+id/yearText"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:id="@+id/yearText"
+            android:textStyle="bold"
+            android:textColor="#ff000000" />
+        <TextView
+            android:text="@+id/monthText"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:id="@+id/monthText"
+            android:textStyle="bold"
+            android:textColor="#ff000000" />
+    </LinearLayout>
     <LinearLayout
         android:orientation="vertical"
         android:minWidth="25px"

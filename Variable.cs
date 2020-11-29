@@ -23,11 +23,23 @@
             "AA000000071090601123400000000000003E81234567887654321", // 稅額差2元以上
         };
 
+        public struct ResultStruct
+        {
+            public ResultStruct(ResultType type, string value)
+            {
+                Type = type;
+                Value = value;
+            }
+            public ResultType Type { get; }
+            public string Value { get; }
+        }
+
         public enum ResultType
         {
             Default,
             LeaveApp,
-            Success,
+            ScanSuccess,
+            ScanFailed,
             Clear,
             ClearAll,
             ClearSuccess,
