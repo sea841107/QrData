@@ -119,7 +119,7 @@ namespace QrData
                                 monthStruct.Tax -= tax;
                                 monthStruct.ToLimit = true;
                                 buyerStruct.MonthDic[year + month] = monthStruct;
-                                return new Variable.ResultStruct(Variable.ResultType.TaxOffsetExceed2, year + "年" + month + "月\n");
+                                return new Variable.ResultStruct(Variable.ResultType.TaxOffsetExceed2, null);
                             }
                         }
                     }
@@ -149,7 +149,7 @@ namespace QrData
                     buyerStruct.MonthDic.Add(year + month, monthStruct);
                     monthStruct.DetailDic.Add(uuid, detailStruct);
                 }
-                return new Variable.ResultStruct(Variable.ResultType.ScanSuccess, year + "年" + month + "月\n");
+                return new Variable.ResultStruct(Variable.ResultType.ScanSuccess, year + "年\n" + month + "月");
             }
             return new Variable.ResultStruct(Variable.ResultType.ScanFailed, null);
         }

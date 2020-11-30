@@ -67,10 +67,8 @@
         public static bool CheckIdValid(string id)
         {
             // 買方統編規則：長度須為8個字元、不能為空、不能為負數、不能是00000000
-            if (id.Length != 8 || id == "" || id[0] == '-' || id == EmptyId)
-            {
+            if (id.Length != 8 || id == "" || id[0] == '-' || id[0] == '+' || id == EmptyId)
                 return false;
-            }
             return true;
         }
     }

@@ -3,7 +3,7 @@ using System.Linq;
 using Android.App;
 using Android.Widget;
 using Android.Content;
-using Android.Text;
+using Android.Graphics;
 using Android.Views;
 using Android.Views.InputMethods;
 
@@ -23,6 +23,8 @@ namespace QrData
         {
             var messageType = Variable.MessageType.Toast;
             var lengthType = ToastLength.Short;
+            var textColor = Color.White;
+            var bgColor = Color.DarkGray;
             Func<object> dialogPositive = null;
             Func<object> dialogNagative = null;
             string message;
@@ -43,7 +45,9 @@ namespace QrData
                     };
                     break;
                 case Variable.ResultType.ScanSuccess:
-                    message = result.Value + "掃描成功！";
+                    message = result.Value;
+                    lengthType = ToastLength.Long;
+                    bgColor = Color.SeaGreen;
                     break;
                 case Variable.ResultType.Clear:
                     message = "確定要清空此筆資料？";
@@ -76,34 +80,42 @@ namespace QrData
                     };
                     break;
                 case Variable.ResultType.ClearSuccess:
-                    message = "刪除成功！";
+                    message = "刪除成功";
                     break;
                 case Variable.ResultType.ClearFailed:
-                    message = "刪除失敗！";
+                    message = "刪除失敗";
                     break;
                 case Variable.ResultType.ClearBeforeEdit:
-                    message = "請先清空資料再修改統編！";
+                    message = "請先清空資料";
                     break;
                 case Variable.ResultType.UuidExist:
-                    message = "此發票已掃描過！";
+                    message = "已掃描過";
+                    lengthType = ToastLength.Long;
+                    textColor = Color.Black;
+                    bgColor = Color.LightYellow;
                     break;
                 case Variable.ResultType.BuyerIdUnvalid:
-                    message = "請輸入長度8位的有效統編！";
+                    message = "無效統編";
                     break;
                 case Variable.ResultType.BuyerIdEmpty:
-                    message = "此發票無統編！";
+                    message = "沒有統編";
+                    lengthType = ToastLength.Long;
+                    bgColor = Color.Black;
                     break;
                 case Variable.ResultType.BuyerIdNotMatch:
-                    message = "此發票的統編與輸入的統編不一樣！";
+                    message = "統編不同";
                     lengthType = ToastLength.Long;
+                    bgColor = Color.LightSkyBlue;
                     break;
                 case Variable.ResultType.TaxExceed500:
-                    message = "此發票稅額超過500元！";
+                    message = "500元以上";
                     lengthType = ToastLength.Long;
+                    bgColor = Color.Purple;
                     break;
                 case Variable.ResultType.TaxOffsetExceed2:
-                    message = result.Value + "累計稅額與總計稅額差超過2元！";
+                    message = "超過2元";
                     lengthType = ToastLength.Long;
+                    bgColor = Color.Red;
                     break;
                 default:
                     message = result.Value;
@@ -112,7 +124,7 @@ namespace QrData
             switch (messageType)
             {
                 case Variable.MessageType.Toast:
-                    ShowToast(message, lengthType);
+                    ShowToast(message, lengthType, textColor, bgColor);
                     break;
                 case Variable.MessageType.Dialog:
                     ShowDialog(message, dialogPositive, dialogNagative);
@@ -122,11 +134,15 @@ namespace QrData
             }
         }
 
-        public void ShowToast(string message, ToastLength length)
+        public void ShowToast(string message, ToastLength length, Color textColor, Color bgColor)
         {
-            SpannableStringBuilder text = new SpannableStringBuilder(message);
-            text.SetSpan(new Android.Text.Style.RelativeSizeSpan(1.5f), 0, message.Length, SpanTypes.MarkPoint);
-            Toast toast = Toast.MakeText(MainActivity.Instance, text, length);
+            int size = length == ToastLength.Short ? 30 : 50;
+            Toast toast = Toast.MakeText(MainActivity.Instance, message, length);
+            ViewGroup group = (ViewGroup)toast.View;
+            TextView text = (TextView)group.GetChildAt(0);
+            text.TextSize = size;
+            text.SetTextColor(textColor);
+            toast.View.Background.SetColorFilter(bgColor, PorterDuff.Mode.SrcIn);
             toast.SetGravity(GravityFlags.Center, 0, 0);
             toast.Show();
         }
