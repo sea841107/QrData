@@ -22,6 +22,7 @@ namespace QrData
             instance = this;
             mainView = new MainView();
             mainAudio = new MainAudio();
+            new Timer(long.MaxValue, 100).Start();
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent intent)
@@ -47,6 +48,37 @@ namespace QrData
                 mainView.UpdateListView();
             }
             mainAudio.PlaySound(result);
+        }
+
+        class Timer : CountDownTimer
+        {
+            int tickCount = 0;
+            string tempValue = "";
+            public Timer(long millisInFuture, long countDownInterval) : base(millisInFuture, countDownInterval)
+            {
+            }
+
+            public override void OnTick(long millisUntilFinished)
+            {
+                if (tempValue != Variable.CurQrCode)
+                {
+                    tempValue = Variable.CurQrCode;
+                    tickCount = 0;
+                }
+                if (tempValue != "")
+                {
+                    tickCount++;
+                    if (tickCount == 10)
+                    {
+                        tickCount = 0;
+                        Variable.CurQrCode = "";
+                    }
+                }
+            }
+
+            public override void OnFinish()
+            {
+            }
         }
     }
 }

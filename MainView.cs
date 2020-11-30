@@ -13,6 +13,7 @@ namespace QrData
     {
         ListView listView;
         QrDataAdapter adapter;
+        Toast toast;
         public MainView()
         {
             SetupUI();
@@ -136,12 +137,13 @@ namespace QrData
 
         public void ShowToast(string message, ToastLength length, Color textColor, Color bgColor)
         {
-            int size = length == ToastLength.Short ? 30 : 50;
-            Toast toast = Toast.MakeText(MainActivity.Instance, message, length);
+            if (toast != null) toast.Cancel();
+            toast = Toast.MakeText(MainActivity.Instance, message, length);
             ViewGroup group = (ViewGroup)toast.View;
             TextView text = (TextView)group.GetChildAt(0);
-            text.TextSize = size;
             text.SetTextColor(textColor);
+            text.TextSize = length == ToastLength.Short ? 30 : 50;
+            text.Gravity = GravityFlags.CenterHorizontal;
             toast.View.Background.SetColorFilter(bgColor, PorterDuff.Mode.SrcIn);
             toast.SetGravity(GravityFlags.Center, 0, 0);
             toast.Show();
