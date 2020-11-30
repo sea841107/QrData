@@ -159,23 +159,25 @@ namespace QrData
 
         public void ShowDialog(string message, Func<object> positive, Func<object> nagative)
         {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.Instance);
-            dialog.SetTitle("注意");
-            dialog.SetPositiveButton("確定", (sender, args) =>
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.Instance);
+            builder.SetTitle("注意");
+            builder.SetPositiveButton("確定", (sender, args) =>
             {
                 positive();
-                dialog.Dispose();
+                builder.Dispose();
             });
             if (nagative != null)
             {
-                dialog.SetNegativeButton("返回", (sender, args) =>
+                builder.SetNegativeButton("返回", (sender, args) =>
                 {
                     nagative();
-                    dialog.Dispose();
+                    builder.Dispose();
                 });
             }
-            dialog.SetMessage(message);
-            dialog.Show();
+            builder.SetMessage(message);
+            var dialog = builder.Show();
+            TextView messageText = (TextView)dialog.FindViewById(Android.Resource.Id.Message);
+            messageText.TextSize = 20;
         }
 
         void SetupUI()
