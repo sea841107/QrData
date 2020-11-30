@@ -3,6 +3,8 @@ using System.Linq;
 using Android.App;
 using Android.Widget;
 using Android.Content;
+using Android.Text;
+using Android.Views;
 using Android.Views.InputMethods;
 
 namespace QrData
@@ -17,16 +19,17 @@ namespace QrData
             SetupListView();
         }
 
-        public void ShowMessage(Variable.ResultType resultType, string value)
+        public void ShowMessage(Variable.ResultStruct result)
         {
             var messageType = Variable.MessageType.Toast;
+            var lengthType = ToastLength.Short;
             Func<object> dialogPositive = null;
             Func<object> dialogNagative = null;
             string message;
-            switch (resultType)
+            switch (result.Type)
             {
                 case Variable.ResultType.LeaveApp:
-                    message = "確定離開？";
+                    message = "確定離開？\n (離開後將會清空資料)";
                     messageType = Variable.MessageType.Dialog;
                     dialogPositive = () =>
                     {
@@ -39,17 +42,17 @@ namespace QrData
                         return null;
                     };
                     break;
-                case Variable.ResultType.Success:
-                    message = "掃描成功！";
+                case Variable.ResultType.ScanSuccess:
+                    message = result.Value + "掃描成功！";
                     break;
                 case Variable.ResultType.Clear:
                     message = "確定要清空此筆資料？";
                     messageType = Variable.MessageType.Dialog;
                     dialogPositive = () =>
                     {
-                        var result = MainData.ClearData(value);
+                        var resultStruct = MainData.ClearData(result.Value);
                         UpdateListView();
-                        ShowMessage(result, null);
+                        ShowMessage(resultStruct);
                         return null;
                     };
                     dialogNagative = () =>
@@ -62,9 +65,9 @@ namespace QrData
                     messageType = Variable.MessageType.Dialog;
                     dialogPositive = () =>
                     {
-                        var result = MainData.ClearAllData();
+                        var resultStruct = MainData.ClearAllData();
                         UpdateListView();
-                        ShowMessage(result, null);
+                        ShowMessage(resultStruct);
                         return null;
                     };
                     dialogNagative = () =>
@@ -92,21 +95,24 @@ namespace QrData
                     break;
                 case Variable.ResultType.BuyerIdNotMatch:
                     message = "此發票的統編與輸入的統編不一樣！";
+                    lengthType = ToastLength.Long;
                     break;
                 case Variable.ResultType.TaxExceed500:
                     message = "此發票稅額超過500元！";
+                    lengthType = ToastLength.Long;
                     break;
                 case Variable.ResultType.TaxOffsetExceed2:
-                    message = "累計稅額與總計稅額差超過2元！";
+                    message = result.Value + "累計稅額與總計稅額差超過2元！";
+                    lengthType = ToastLength.Long;
                     break;
                 default:
-                    message = value;
+                    message = result.Value;
                     break;
             }
             switch (messageType)
             {
                 case Variable.MessageType.Toast:
-                    ShowToast(message);
+                    ShowToast(message, lengthType);
                     break;
                 case Variable.MessageType.Dialog:
                     ShowDialog(message, dialogPositive, dialogNagative);
@@ -116,9 +122,13 @@ namespace QrData
             }
         }
 
-        public void ShowToast(string message)
+        public void ShowToast(string message, ToastLength length)
         {
-            Toast.MakeText(MainActivity.Instance, message, ToastLength.Short).Show();
+            SpannableStringBuilder text = new SpannableStringBuilder(message);
+            text.SetSpan(new Android.Text.Style.RelativeSizeSpan(1.5f), 0, message.Length, SpanTypes.MarkPoint);
+            Toast toast = Toast.MakeText(MainActivity.Instance, text, length);
+            toast.SetGravity(GravityFlags.Center, 0, 0);
+            toast.Show();
         }
 
         public void ShowDialog(string message, Func<object> positive, Func<object> nagative)
@@ -158,19 +168,19 @@ namespace QrData
                 }
                 else
                 {
-                    ShowMessage(Variable.ResultType.BuyerIdUnvalid, null);
+                    ShowMessage(new Variable.ResultStruct(Variable.ResultType.BuyerIdUnvalid, null));
                 }
 
             };
             clearButton.Click += (sender, args) =>
             {
-                ShowMessage(Variable.ResultType.ClearAll, null);
+                ShowMessage(new Variable.ResultStruct(Variable.ResultType.ClearAll, null));
             };
             idEditText.LongClick += (sender, args) =>
             {
                 if (MainData.BuyerDic.Count > 0)
                 {
-                    ShowMessage(Variable.ResultType.ClearBeforeEdit, null);
+                    ShowMessage(new Variable.ResultStruct(Variable.ResultType.ClearBeforeEdit, null));
                     InputMethodManager imm = (InputMethodManager)MainActivity.Instance.GetSystemService(Context.InputMethodService);
                     imm.HideSoftInputFromWindow(idEditText.WindowToken, 0);
                 }
@@ -179,7 +189,7 @@ namespace QrData
             {
                 if (MainData.BuyerDic.Count > 0)
                 {
-                    ShowMessage(Variable.ResultType.ClearBeforeEdit, null);
+                    ShowMessage(new Variable.ResultStruct(Variable.ResultType.ClearBeforeEdit, null));
                     InputMethodManager imm = (InputMethodManager)MainActivity.Instance.GetSystemService(Context.InputMethodService);
                     imm.HideSoftInputFromWindow(idEditText.WindowToken, 0);
                 }
@@ -188,13 +198,13 @@ namespace QrData
 
         void SetupListView()
         {
-            adapter = new QrDataAdapter(MainActivity.Instance, Resource.Id.dateText);
+            adapter = new QrDataAdapter(MainActivity.Instance, Resource.Id.text);
             listView = (ListView)MainActivity.Instance.FindViewById(Resource.Id.listView);
             listView.Adapter = adapter;
             listView.ItemLongClick += (sender, args) =>
             {
                 string id = args.View.Id.ToString();
-                ShowMessage(Variable.ResultType.Clear, id);
+                ShowMessage(new Variable.ResultStruct(Variable.ResultType.Clear, id));
             };
         }
 

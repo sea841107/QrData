@@ -68,7 +68,7 @@ namespace QrData
     {
         public static Dictionary<string, BuyerStruct> BuyerDic = new Dictionary<string, BuyerStruct>();
 
-        public static Variable.ResultType SetData(string data)
+        public static Variable.ResultStruct SetData(string data)
         {
             if (data != null)
             {
@@ -82,14 +82,13 @@ namespace QrData
                 int tax = (int)MathF.Round(price / 1.05f * 0.05f);
                 string buyerId = data.Substring(37, 8);
                 string sellerId = data.Substring(45, 8);
-                DetailStruct detailStruct = new DetailStruct(year, month, date, random, price,
-                    unTaxedPrice, tax, buyerId, sellerId);
+                DetailStruct detailStruct = new DetailStruct(year, month, date, random, price, unTaxedPrice, tax, buyerId, sellerId);
                 if (buyerId == Variable.EmptyId)
-                    return Variable.ResultType.BuyerIdEmpty;
+                    return new Variable.ResultStruct(Variable.ResultType.BuyerIdEmpty, null);
                 if (buyerId != Variable.CurBuyerId)
-                    return Variable.ResultType.BuyerIdNotMatch;
+                    return new Variable.ResultStruct(Variable.ResultType.BuyerIdNotMatch, null);
                 if (tax > Variable.MaxTax)
-                    return Variable.ResultType.TaxExceed500;
+                    return new Variable.ResultStruct(Variable.ResultType.TaxExceed500, null);
                 if (BuyerDic.ContainsKey(buyerId))
                 {
                     var buyerStruct = BuyerDic[buyerId];
@@ -98,7 +97,7 @@ namespace QrData
                         var monthStruct = buyerStruct.MonthDic[year + month];
                         if (monthStruct.DetailDic.ContainsKey(uuid))
                         {
-                            return Variable.ResultType.UuidExist;
+                            return new Variable.ResultStruct(Variable.ResultType.UuidExist, null);
                         }
                         else
                         {
@@ -120,7 +119,7 @@ namespace QrData
                                 monthStruct.Tax -= tax;
                                 monthStruct.ToLimit = true;
                                 buyerStruct.MonthDic[year + month] = monthStruct;
-                                return Variable.ResultType.TaxOffsetExceed2;
+                                return new Variable.ResultStruct(Variable.ResultType.TaxOffsetExceed2, year + "年" + month + "月\n");
                             }
                         }
                     }
@@ -150,11 +149,12 @@ namespace QrData
                     buyerStruct.MonthDic.Add(year + month, monthStruct);
                     monthStruct.DetailDic.Add(uuid, detailStruct);
                 }
+                return new Variable.ResultStruct(Variable.ResultType.ScanSuccess, year + "年" + month + "月\n");
             }
-            return Variable.ResultType.Success;
+            return new Variable.ResultStruct(Variable.ResultType.ScanFailed, null);
         }
 
-        public static Variable.ResultType ClearData(string key)
+        public static Variable.ResultStruct ClearData(string key)
         {
             var buyerStruct = BuyerDic[Variable.CurBuyerId];
             if (buyerStruct.MonthDic.ContainsKey(key))
@@ -162,16 +162,16 @@ namespace QrData
                 buyerStruct.MonthDic.Remove(key);
                 if (buyerStruct.MonthDic.Count == 0)
                     BuyerDic.Remove(Variable.CurBuyerId);
-                return Variable.ResultType.ClearSuccess;
+                return new Variable.ResultStruct(Variable.ResultType.ClearSuccess, null);
             }
             else
-                return Variable.ResultType.ClearFailed;
+                return new Variable.ResultStruct(Variable.ResultType.ClearFailed, null);
         }
 
-        public static Variable.ResultType ClearAllData()
+        public static Variable.ResultStruct ClearAllData()
         {
             BuyerDic.Clear();
-            return Variable.ResultType.ClearSuccess;
+            return new Variable.ResultStruct(Variable.ResultType.ClearSuccess, null);
         }
 
         public static Dictionary<string, MonthStruct> GetAllData()

@@ -19,14 +19,16 @@ namespace QrData
             {
                 convertView = LayoutInflater.From(Context).Inflate(Resource.Layout.data, parent, false);
             }
-            TextView date = (TextView)convertView.FindViewById(Resource.Id.dateText);
+            TextView year = (TextView)convertView.FindViewById(Resource.Id.yearText);
+            TextView month = (TextView)convertView.FindViewById(Resource.Id.monthText);
             TextView amount = (TextView)convertView.FindViewById(Resource.Id.amountValue);
             TextView total = (TextView)convertView.FindViewById(Resource.Id.totalValue);
             TextView unTaxed = (TextView)convertView.FindViewById(Resource.Id.unTaxedValue);
             TextView tax = (TextView)convertView.FindViewById(Resource.Id.taxValue);
             convertView.Id = Convert.ToInt32(item[0]);
             convertView.SetBackgroundColor(Color.LightGoldenrodYellow);
-            date.Text = item[0].Substring(0, 3) + "/" + item[0][3..];
+            year.Text = item[0].Substring(0, 3) + "年";
+            month.Text = item[0][3..] + "月";
             amount.Text = item[1];
             total.Text = item[2];
             unTaxed.Text = item[3];
