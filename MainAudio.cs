@@ -1,9 +1,17 @@
 ﻿using Android.Media;
+using Android.Speech.Tts;
 
 namespace QrData
 {
     public class MainAudio
     {
+        TextToSpeech textToSpeech;
+
+        public MainAudio()
+        {
+            textToSpeech = new TextToSpeech(MainActivity.Instance, MainActivity.Instance, "com.android.google.tts");
+        }
+
         public void PlaySound(Variable.ResultStruct result)
         {
             int soundId;
@@ -25,6 +33,16 @@ namespace QrData
             }
             MediaPlayer player = MediaPlayer.Create(MainActivity.Instance, soundId);
             player.Start();
+        }
+
+        public void SetLanguage(Java.Util.Locale locale)
+        {
+            textToSpeech.SetLanguage(locale);
+        }
+
+        public void Speak(string message)
+        {
+            textToSpeech.Speak(message, QueueMode.Flush, null, null);
         }
     }
 }

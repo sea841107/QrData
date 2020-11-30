@@ -26,6 +26,7 @@ namespace QrData
             var lengthType = ToastLength.Short;
             var textColor = Color.White;
             var bgColor = Color.DarkGray;
+            bool shouldSpeak = false;
             Func<object> dialogPositive = null;
             Func<object> dialogNagative = null;
             string message;
@@ -49,6 +50,7 @@ namespace QrData
                     message = result.Value;
                     lengthType = ToastLength.Long;
                     bgColor = Color.SeaGreen;
+                    shouldSpeak = true;
                     break;
                 case Variable.ResultType.Clear:
                     message = "確定要清空此筆資料？";
@@ -94,6 +96,7 @@ namespace QrData
                     lengthType = ToastLength.Long;
                     textColor = Color.Black;
                     bgColor = Color.LightYellow;
+                    shouldSpeak = true;
                     break;
                 case Variable.ResultType.BuyerIdUnvalid:
                     message = "無效統編";
@@ -102,21 +105,25 @@ namespace QrData
                     message = "沒有統編";
                     lengthType = ToastLength.Long;
                     bgColor = Color.Black;
+                    shouldSpeak = true;
                     break;
                 case Variable.ResultType.BuyerIdNotMatch:
                     message = "統編不同";
                     lengthType = ToastLength.Long;
                     bgColor = Color.LightSkyBlue;
+                    shouldSpeak = true;
                     break;
                 case Variable.ResultType.TaxExceed500:
                     message = "500元以上";
                     lengthType = ToastLength.Long;
                     bgColor = Color.Purple;
+                    shouldSpeak = true;
                     break;
                 case Variable.ResultType.TaxOffsetExceed2:
                     message = "超過2元";
                     lengthType = ToastLength.Long;
                     bgColor = Color.Red;
+                    shouldSpeak = true;
                     break;
                 default:
                     message = result.Value;
@@ -125,7 +132,7 @@ namespace QrData
             switch (messageType)
             {
                 case Variable.MessageType.Toast:
-                    ShowToast(message, lengthType, textColor, bgColor);
+                    ShowToast(message, lengthType, textColor, bgColor, shouldSpeak);
                     break;
                 case Variable.MessageType.Dialog:
                     ShowDialog(message, dialogPositive, dialogNagative);
@@ -135,7 +142,7 @@ namespace QrData
             }
         }
 
-        public void ShowToast(string message, ToastLength length, Color textColor, Color bgColor)
+        public void ShowToast(string message, ToastLength length, Color textColor, Color bgColor, bool shouldSpeak)
         {
             if (toast != null) toast.Cancel();
             toast = Toast.MakeText(MainActivity.Instance, message, length);
@@ -147,6 +154,7 @@ namespace QrData
             toast.View.Background.SetColorFilter(bgColor, PorterDuff.Mode.SrcIn);
             toast.SetGravity(GravityFlags.Center, 0, 0);
             toast.Show();
+            if (shouldSpeak) MainActivity.Instance.OnSpeak(message);
         }
 
         public void ShowDialog(string message, Func<object> positive, Func<object> nagative)

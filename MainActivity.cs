@@ -2,11 +2,13 @@
 using Android.OS;
 using Android.Support.V7.App;
 using Android.Content;
+using Android.Speech.Tts;
+using Android.Runtime;
 
 namespace QrData
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
-    public class MainActivity : AppCompatActivity
+    public class MainActivity : AppCompatActivity, TextToSpeech.IOnInitListener
     {
         public MainActivity() {}
         private static MainActivity instance;
@@ -47,7 +49,21 @@ namespace QrData
             {
                 mainView.UpdateListView();
             }
-            mainAudio.PlaySound(result);
+            //mainAudio.PlaySound(result);
+        }
+
+        public void OnSpeak(string message)
+        {
+            string realMessage = message.Replace("\n", "");
+            mainAudio.Speak(realMessage);
+        }
+
+        public void OnInit([GeneratedEnum] OperationResult status)
+        {
+            if (status == OperationResult.Success)
+                mainAudio.SetLanguage(Java.Util.Locale.Taiwan);
+            else if (status == OperationResult.Error)
+                mainAudio.SetLanguage(Java.Util.Locale.Default);
         }
 
         class Timer : CountDownTimer
