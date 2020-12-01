@@ -87,7 +87,9 @@ namespace QrData
                     return new Variable.ResultStruct(Variable.ResultType.BuyerIdEmpty, null);
                 if (buyerId != Variable.CurBuyerId)
                     return new Variable.ResultStruct(Variable.ResultType.BuyerIdNotMatch, null);
-                if (tax > Variable.MaxTax)
+                if (Variable.Tax500Mode && tax <= Variable.MaxTax)
+                    return new Variable.ResultStruct(Variable.ResultType.TaxBelow500, null);
+                else if (!Variable.Tax500Mode && tax > Variable.MaxTax)
                     return new Variable.ResultStruct(Variable.ResultType.TaxExceed500, null);
                 if (BuyerDic.ContainsKey(buyerId))
                 {
@@ -104,7 +106,7 @@ namespace QrData
                             monthStruct.Price += price;
                             monthStruct.UnTaxedPrice += unTaxedPrice;
                             monthStruct.Tax += tax;
-                            if (monthStruct.CalcTaxOffset() < Variable.MaxTaxOffset)
+                            if (Variable.Tax500Mode || (monthStruct.CalcTaxOffset() < Variable.MaxTaxOffset))
                             {
                                 monthStruct.Amount += 1;
                                 buyerStruct.Amount += 1;

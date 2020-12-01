@@ -32,6 +32,14 @@
             android:textColor="#ff0000ff"
             android:hint="00000000"
             android:maxLength="8" />
+        <CheckBox
+            android:text="稅金500元以上"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/tax500CheckBox"
+            android:layout_marginLeft="10px"
+            android:textSize="40px"
+            android:textColor="#ff0000ff" />
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"

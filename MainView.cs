@@ -119,6 +119,12 @@ namespace QrData
                     bgColor = Color.Purple;
                     shouldSpeak = true;
                     break;
+                case Variable.ResultType.TaxBelow500:
+                    message = "500元以下";
+                    lengthType = ToastLength.Long;
+                    bgColor = Color.Purple;
+                    shouldSpeak = true;
+                    break;
                 case Variable.ResultType.TaxOffsetExceed2:
                     message = "超過2元";
                     lengthType = ToastLength.Long;
@@ -185,6 +191,7 @@ namespace QrData
             Button scanButton = MainActivity.Instance.FindViewById<Button>(Resource.Id.scanButton);
             Button clearButton = MainActivity.Instance.FindViewById<Button>(Resource.Id.clearButton);
             EditText idEditText = MainActivity.Instance.FindViewById<EditText>(Resource.Id.buyerIdText);
+            CheckBox tax500CheckBox = MainActivity.Instance.FindViewById<CheckBox>(Resource.Id.tax500CheckBox);
             scanButton.Click += (sender, args) =>
             {
                 if (Variable.CheckIdValid(idEditText.Text))
@@ -221,6 +228,16 @@ namespace QrData
                     InputMethodManager imm = (InputMethodManager)MainActivity.Instance.GetSystemService(Context.InputMethodService);
                     imm.HideSoftInputFromWindow(idEditText.WindowToken, 0);
                 }
+            };
+            tax500CheckBox.Click += (sender, args) =>
+            {
+                if (MainData.BuyerDic.Count > 0)
+                {
+                    ShowMessage(new Variable.ResultStruct(Variable.ResultType.ClearBeforeEdit, null));
+                    tax500CheckBox.Checked = !tax500CheckBox.Checked;
+                }
+                else
+                    Variable.Tax500Mode = tax500CheckBox.Checked;
             };
         }
 

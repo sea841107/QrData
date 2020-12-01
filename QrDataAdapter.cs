@@ -26,7 +26,7 @@ namespace QrData
             TextView unTaxed = (TextView)convertView.FindViewById(Resource.Id.unTaxedValue);
             TextView tax = (TextView)convertView.FindViewById(Resource.Id.taxValue);
             convertView.Id = Convert.ToInt32(item[0]);
-            convertView.SetBackgroundColor(Color.LightGoldenrodYellow);
+            convertView.SetBackgroundColor(position % 2 == 0 ? Color.LightGoldenrodYellow : Color.LightCyan);
             year.Text = item[0].Substring(0, 3) + "年";
             month.Text = item[0][3..] + "月";
             amount.Text = item[1];
