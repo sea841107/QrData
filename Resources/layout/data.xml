@@ -64,32 +64,6 @@
         android:minHeight="25px"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/totalLayout"
-        android:layout_marginLeft="70px">
-        <TextView
-            android:text="總計額"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/totalTitle"
-            android:textColor="#ff0000ff"
-            android:gravity="center" />
-        <TextView
-            android:text="0"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/totalValue"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textColor="#ffff0000" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:minWidth="25px"
-        android:minHeight="25px"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/unTaxedLayout"
         android:layout_marginLeft="70px">
         <TextView
@@ -132,6 +106,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/taxValue"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="#ffff0000" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/totalLayout"
+        android:layout_marginLeft="70px">
+        <TextView
+            android:text="總計額"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/totalTitle"
+            android:textColor="#ff0000ff"
+            android:gravity="center" />
+        <TextView
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/totalValue"
             android:gravity="center"
             android:textStyle="bold"
             android:textColor="#ffff0000" />
