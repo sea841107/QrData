@@ -16,6 +16,7 @@ namespace QrData
 
         MainView mainView;
         MainAudio mainAudio;
+        TextToSpeech textToSpeech;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -24,6 +25,7 @@ namespace QrData
             instance = this;
             mainView = new MainView();
             mainAudio = new MainAudio();
+            textToSpeech = new TextToSpeech(this, this, "com.google.android.tts");
             new Timer(long.MaxValue, 100).Start();
         }
 
@@ -55,15 +57,15 @@ namespace QrData
         public void OnSpeak(string message)
         {
             string realMessage = message.Replace("\n", "");
-            mainAudio.Speak(realMessage);
+            textToSpeech.Speak(realMessage, QueueMode.Flush, null, null);
         }
 
         public void OnInit([GeneratedEnum] OperationResult status)
         {
             if (status == OperationResult.Success)
-                mainAudio.SetLanguage(Java.Util.Locale.Taiwan);
+                textToSpeech.SetLanguage(Java.Util.Locale.Taiwan);
             else if (status == OperationResult.Error)
-                mainAudio.SetLanguage(Java.Util.Locale.Default);
+                textToSpeech.SetLanguage(Java.Util.Locale.Default);
         }
 
         class Timer : CountDownTimer
