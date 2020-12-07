@@ -86,7 +86,7 @@ namespace QrData
                 if (tempValue != "")
                 {
                     tickCount++;
-                    if (tickCount == 10)
+                    if (tickCount == 30)
                     {
                         tickCount = 0;
                         Variable.CurQrCode = "";

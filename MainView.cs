@@ -155,7 +155,7 @@ namespace QrData
             ViewGroup group = (ViewGroup)toast.View;
             TextView text = (TextView)group.GetChildAt(0);
             text.SetTextColor(textColor);
-            text.TextSize = length == ToastLength.Short ? 30 : 50;
+            text.TextSize = length == ToastLength.Short ? 30 : 40;
             text.Gravity = GravityFlags.CenterHorizontal;
             toast.View.Background.SetColorFilter(bgColor, PorterDuff.Mode.SrcIn);
             toast.SetGravity(GravityFlags.Center, 0, 0);

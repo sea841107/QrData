@@ -21,7 +21,7 @@
             android:id="@+id/buyerIdTitle"
             android:textSize="60px"
             android:textStyle="bold"
-            android:typeface="serif"/>
+            android:typeface="sans" />
         <EditText
             android:inputType="none|numberSigned"
             android:layout_width="wrap_content"
@@ -56,7 +56,7 @@
             android:id="@+id/scanButton"
             android:textSize="60px"
             android:textStyle="bold"
-            android:typeface="serif"
+            android:typeface="sans"
             android:layout_gravity="center"
             android:textColor="#ffc80000" />
         <Button
@@ -66,7 +66,7 @@
             android:id="@+id/clearButton"
             android:textSize="60px"
             android:textStyle="bold"
-            android:typeface="serif"
+            android:typeface="sans"
             android:layout_gravity="center"
             android:textColor="#ffc80000" />
     </LinearLayout>
