@@ -84,4 +84,12 @@
             android:layout_height="match_parent"
             android:id="@+id/listView" />
     </LinearLayout>
+    <TextView
+            android:text="版本號 1.0.0"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/versionText"
+            android:typeface="sans"
+            android:gravity="right|bottom" />
 </LinearLayout>

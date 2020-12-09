@@ -3,6 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black">
+    <Button
+        android:text="看答案"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/answerButton"
+        android:textSize="120px"
+        android:typeface="sans"
+        android:textStyle="bold" />
     <SurfaceView
         android:id="@+id/surfaceView" 
         android:layout_width="match_parent"

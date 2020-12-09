@@ -27,6 +27,7 @@ namespace QrData
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.camera);
+            SetupUI();
             SetupCamera();
             if (Variable.FakeMode)
                 FakeScan();
@@ -102,6 +103,15 @@ namespace QrData
         public void SurfaceDestroyed(ISurfaceHolder holder)
         {
             cameraSource.Stop();
+        }
+
+        void SetupUI()
+        {
+            Button answerButton = FindViewById<Button>(Resource.Id.answerButton);
+            answerButton.Click += (sender, args) =>
+            {
+                Finish();
+            };
         }
 
         void SetupCamera()

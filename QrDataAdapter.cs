@@ -34,7 +34,7 @@ namespace QrData
             unTaxed.Text = item[3];
             tax.Text = item[4];
             if (item[5] == "True")
-                convertView.SetBackgroundColor(Color.PaleVioletRed);
+                convertView.SetBackgroundColor(Color.LightPink);
             return convertView;
         }
     }
