@@ -121,7 +121,7 @@ namespace QrData
                                 monthStruct.Tax -= tax;
                                 monthStruct.ToLimit = true;
                                 buyerStruct.MonthDic[year + month] = monthStruct;
-                                return new Variable.ResultStruct(Variable.ResultType.TaxOffsetExceed2, null);
+                                return new Variable.ResultStruct(Variable.ResultType.TaxOffsetExceed2, year + "年\n" + month + "月");
                             }
                         }
                     }

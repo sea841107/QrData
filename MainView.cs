@@ -126,7 +126,7 @@ namespace QrData
                     shouldSpeak = true;
                     break;
                 case Variable.ResultType.TaxOffsetExceed2:
-                    message = "超過2元";
+                    message = result.Value + "\n超過2元";
                     lengthType = ToastLength.Long;
                     bgColor = Color.Red;
                     shouldSpeak = true;
