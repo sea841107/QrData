@@ -186,6 +186,24 @@ namespace QrData
             messageText.TextSize = 20;
         }
 
+        public void ShowChooseFontSize()
+        {
+            string[] items = new string[3] { "大", "中", "小" };
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.Instance);
+            builder.SetTitle("選擇字體大小");
+            builder.SetSingleChoiceItems(items, 3, MainActivity.Instance.OnClickFontSize);
+            builder.SetPositiveButton("確定", (sender, args) =>
+            {
+                Variable.CurFontSize = Variable.TempFontSize;
+                builder.Dispose();
+            });
+            builder.SetNegativeButton("返回", (sender, args) =>
+            {
+                builder.Dispose();
+            });
+            builder.Show();
+        }
+
         void SetupUI()
         {
             Button scanButton = MainActivity.Instance.FindViewById<Button>(Resource.Id.scanButton);

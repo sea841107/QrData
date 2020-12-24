@@ -2,6 +2,8 @@
 {
     public static class Variable
     {
+        public static int CurFontSize = 0;
+        public static int TempFontSize = 0;
         public static string CurBuyerId = ""; // 輸入的統編
         public static string CurQrCode = "";
         public static bool Tax500Mode = false; // 稅金500元以上模式
@@ -72,6 +74,13 @@
             if (id.Length != 8 || id == "" || id[0] == '-' || id[0] == '+' || id == EmptyId)
                 return false;
             return true;
+        }
+
+        public enum FontSize
+        {
+            Big = 0,
+            Medium = 1,
+            Small = 2
         }
     }
 }

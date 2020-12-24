@@ -4,6 +4,7 @@ using Android.Support.V7.App;
 using Android.Content;
 using Android.Speech.Tts;
 using Android.Runtime;
+using Android.Views;
 
 namespace QrData
 {
@@ -37,6 +38,30 @@ namespace QrData
                 string error = intent.GetStringExtra("Error");
                 mainView.ShowMessage(new Variable.ResultStruct(Variable.ResultType.Default, error));
             }
+        }
+
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater inflater = MenuInflater;
+            inflater.Inflate(Resource.Menu.menu_main, menu);
+            return base.OnCreateOptionsMenu(menu);
+        }
+
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
+            int id = item.ItemId;
+            if (id == Resource.Id.action_settings)
+            {
+                mainView.ShowChooseFontSize();
+                return true;
+            }
+
+            return base.OnOptionsItemSelected(item);
+        }
+
+        public void OnClickFontSize(object sender, DialogClickEventArgs args)
+        {
+            Variable.TempFontSize = args.Which;
         }
 
         public override void OnBackPressed()
