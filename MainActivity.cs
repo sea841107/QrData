@@ -61,7 +61,10 @@ namespace QrData
 
         public void OnClickFontSize(object sender, DialogClickEventArgs args)
         {
-            Variable.TempFontSize = args.Which;
+            Variable.CurFontSize = args.Which;
+            Dialog dialog = (Dialog)sender;
+            dialog.Dismiss();
+            mainView.UpdateListView();
         }
 
         public override void OnBackPressed()

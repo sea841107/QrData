@@ -13,22 +13,22 @@
         android:gravity="center">
         <TextView
             android:text="@+id/yearText"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="25px"
             android:minHeight="25px"
             android:id="@+id/yearText"
+            android:textSize="47px"
             android:textStyle="bold"
             android:textColor="#ff000000" />
         <TextView
             android:text="@+id/monthText"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="25px"
             android:minHeight="25px"
             android:id="@+id/monthText"
+            android:textSize="47px"
             android:textStyle="bold"
             android:textColor="#ff000000" />
     </LinearLayout>
@@ -42,18 +42,18 @@
         android:layout_marginLeft="20px">
         <TextView
             android:text="張數"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/amountTitle"
+            android:textSize="47px"
             android:textColor="#ff0000ff"
             android:gravity="center" />
         <TextView
             android:text="0"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/amountValue"
+            android:textSize="47px"
             android:gravity="center"
             android:textStyle="bold"
             android:textColor="#ffff0000" />
@@ -68,18 +68,18 @@
         android:layout_marginLeft="70px">
         <TextView
             android:text="未稅額"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/unTaxedTitle"
+            android:textSize="47px"
             android:textColor="#ff0000ff"
             android:gravity="center" />
         <TextView
             android:text="0"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/unTaxedValue"
+            android:textSize="47px"
             android:gravity="center"
             android:textStyle="bold"
             android:textColor="#ffff0000" />
@@ -94,18 +94,18 @@
         android:layout_marginLeft="70px">
         <TextView
             android:text="稅金"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/taxTitle"
+            android:textSize="47px"
             android:textColor="#ff0000ff"
             android:gravity="center" />
         <TextView
             android:text="0"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/taxValue"
+            android:textSize="47px"
             android:gravity="center"
             android:textStyle="bold"
             android:textColor="#ffff0000" />
@@ -120,18 +120,18 @@
         android:layout_marginLeft="70px">
         <TextView
             android:text="總計額"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/totalTitle"
+            android:textSize="47px"
             android:textColor="#ff0000ff"
             android:gravity="center" />
         <TextView
             android:text="0"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/totalValue"
+            android:textSize="47px"
             android:gravity="center"
             android:textStyle="bold"
             android:textColor="#ffff0000" />

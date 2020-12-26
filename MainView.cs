@@ -192,15 +192,6 @@ namespace QrData
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.Instance);
             builder.SetTitle("選擇字體大小");
             builder.SetSingleChoiceItems(items, 3, MainActivity.Instance.OnClickFontSize);
-            builder.SetPositiveButton("確定", (sender, args) =>
-            {
-                Variable.CurFontSize = Variable.TempFontSize;
-                builder.Dispose();
-            });
-            builder.SetNegativeButton("返回", (sender, args) =>
-            {
-                builder.Dispose();
-            });
             builder.Show();
         }
 

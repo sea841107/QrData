@@ -3,7 +3,6 @@
     public static class Variable
     {
         public static int CurFontSize = 0;
-        public static int TempFontSize = 0;
         public static string CurBuyerId = ""; // 輸入的統編
         public static string CurQrCode = "";
         public static bool Tax500Mode = false; // 稅金500元以上模式
@@ -82,5 +81,8 @@
             Medium = 1,
             Small = 2
         }
+        readonly public static int FontSizeBig = 20;
+        readonly public static int FontSizeMedium = 17;
+        readonly public static int FontSizeSmall = 14;
     }
 }
