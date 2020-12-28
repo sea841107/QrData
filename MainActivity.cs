@@ -5,10 +5,11 @@ using Android.Content;
 using Android.Speech.Tts;
 using Android.Runtime;
 using Android.Views;
+using Android.Content.PM;
 
 namespace QrData
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true, ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : AppCompatActivity, TextToSpeech.IOnInitListener
     {
         public MainActivity() {}
