@@ -1,6 +1,4 @@
 obj/
 bin/
 *.apk
-.suo
-.vs/
-.vs/QrData/v16/.suo
+/.vs
