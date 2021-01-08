@@ -49,7 +49,7 @@ namespace QrData
         public int CalcTaxOffset()
         {
             int pureTax = (int)MathF.Round(Price / 1.05f * 0.05f);
-            return Tax - pureTax;
+            return (int)MathF.Abs(Tax - pureTax);
         }
     }
 
@@ -72,16 +72,22 @@ namespace QrData
         {
             if (data != null)
             {
+                int yearLength = 3; // 中華民國3碼、西元4碼
                 string uuid = data.Substring(0, 10);
-                string year = data.Substring(10, 3);
-                string month = data.Substring(13, 2);
-                string date = data.Substring(15, 2);
-                string random = data.Substring(17, 4);
-                int price = Convert.ToInt32(data.Substring(29, 8), 16);
+                string year = data.Substring(10, yearLength);
+                if (year[0] == '2' && year[1] == '0')
+                {
+                    yearLength = 4;
+                    year = (Convert.ToInt32(data.Substring(10, yearLength)) - 1911).ToString();
+                }
+                string month = data.Substring(10 + yearLength, 2);
+                string date = data.Substring(12 + yearLength, 2);
+                string random = data.Substring(14 + yearLength, 4);
+                int price = Convert.ToInt32(data.Substring(26 + yearLength, 8), 16);
                 int unTaxedPrice = (int)MathF.Round(price / 1.05f);
                 int tax = (int)MathF.Round(price / 1.05f * 0.05f);
-                string buyerId = data.Substring(37, 8);
-                string sellerId = data.Substring(45, 8);
+                string buyerId = data.Substring(34 + yearLength, 8);
+                string sellerId = data.Substring(42 + yearLength, 8);
                 DetailStruct detailStruct = new DetailStruct(year, month, date, random, price, unTaxedPrice, tax, buyerId, sellerId);
                 if (buyerId == Variable.EmptyId)
                     return new Variable.ResultStruct(Variable.ResultType.BuyerIdEmpty, null);
