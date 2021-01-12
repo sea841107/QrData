@@ -53,7 +53,9 @@ namespace QrData
                     shouldSpeak = true;
                     break;
                 case Variable.ResultType.Clear:
-                    message = "確定要清空此筆資料？";
+                    string year = result.Value[..3] + "年";
+                    string month = result.Value[3..] + "月";
+                    message = year + month + "\n確定要清空此筆資料？";
                     messageType = Variable.MessageType.Dialog;
                     dialogPositive = () =>
                     {
