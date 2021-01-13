@@ -6,6 +6,7 @@ using Android.Speech.Tts;
 using Android.Runtime;
 using Android.Views;
 using Android.Content.PM;
+using Java.IO;
 
 namespace QrData
 {
@@ -95,6 +96,31 @@ namespace QrData
                 textToSpeech.SetLanguage(Java.Util.Locale.Taiwan);
             else if (status == OperationResult.Error)
                 textToSpeech.SetLanguage(Java.Util.Locale.Default);
+        }
+
+        public void DeleteCache()
+        {
+            DeleteDir(CacheDir);
+            DeleteDir(CodeCacheDir);
+            DeleteDir(ExternalCacheDir);
+        }
+
+        public void DeleteDir(File dir)
+        {
+            if (dir != null && dir.IsDirectory)
+            {
+                string[] children = dir.List();
+                for (int i = 0; i < children.Length; i++)
+                {
+                    File file = new File(dir, children[i]);
+                    DeleteDir(file);
+                }
+                dir.Delete();
+            }
+            else if (dir != null && dir.IsFile)
+            {
+                dir.Delete();
+            }
         }
 
         class Timer : CountDownTimer

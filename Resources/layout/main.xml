@@ -85,7 +85,7 @@
             android:id="@+id/listView" />
     </LinearLayout>
     <TextView
-            android:text="版本號 1.0.8"
+            android:text="版本號 1.0.9"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -164,6 +164,7 @@ namespace QrData
 
         public static Variable.ResultStruct ClearData(string key)
         {
+            MainActivity.Instance.DeleteCache();
             var buyerStruct = BuyerDic[Variable.CurBuyerId];
             if (buyerStruct.MonthDic.ContainsKey(key))
             {
@@ -178,6 +179,7 @@ namespace QrData
 
         public static Variable.ResultStruct ClearAllData()
         {
+            MainActivity.Instance.DeleteCache();
             BuyerDic.Clear();
             return new Variable.ResultStruct(Variable.ResultType.ClearSuccess, null);
         }
