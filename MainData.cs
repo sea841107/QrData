@@ -48,7 +48,7 @@ namespace QrData
         public Dictionary<string, DetailStruct> DetailDic { get; }
         public int CalcTaxOffset()
         {
-            int pureTax = (int)MathF.Round(Price / 1.05f * 0.05f);
+            int pureTax = (int)MathF.Round(UnTaxedPrice * 0.05f, MidpointRounding.AwayFromZero);
             return (int)MathF.Abs(Tax - pureTax);
         }
     }
@@ -85,7 +85,7 @@ namespace QrData
                 string random = data.Substring(14 + yearLength, 4);
                 int price = Convert.ToInt32(data.Substring(26 + yearLength, 8), 16);
                 int unTaxedPrice = (int)MathF.Round(price / 1.05f);
-                int tax = (int)MathF.Round(price / 1.05f * 0.05f);
+                int tax = price - unTaxedPrice;
                 string buyerId = data.Substring(34 + yearLength, 8);
                 string sellerId = data.Substring(42 + yearLength, 8);
                 DetailStruct detailStruct = new DetailStruct(year, month, date, random, price, unTaxedPrice, tax, buyerId, sellerId);
