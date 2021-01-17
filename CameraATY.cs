@@ -69,11 +69,11 @@ namespace QrData
                         var realData = QRCode0[0] == '*' ? QRCode1 : QRCode0;
                         if (Variable.CurQrCode == realData) return;
                         Variable.CurQrCode = realData;
-                        RunOnUiThread(() =>
-                        {
-                            var result = MainData.SetData(realData);
-                            MainActivity.Instance.OnResult(result);
-                        });
+                        //RunOnUiThread(() =>
+                        //{
+                        //    var result = MainData.SetData(realData);
+                        //    MainActivity.Instance.OnResult(result);
+                        //});
                     }
                 }
             }

@@ -29,7 +29,7 @@ namespace QrData
             mainView = new MainView();
             mainAudio = new MainAudio();
             textToSpeech = new TextToSpeech(this, this, "com.google.android.tts");
-            new Timer(long.MaxValue, 100).Start();
+            new Timer(long.MaxValue, 10).Start();
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent intent)
@@ -100,9 +100,9 @@ namespace QrData
 
         public void DeleteCache()
         {
-            DeleteDir(CacheDir);
-            DeleteDir(CodeCacheDir);
-            DeleteDir(ExternalCacheDir);
+            //DeleteDir(CacheDir);
+            //DeleteDir(CodeCacheDir);
+            //DeleteDir(ExternalCacheDir);
         }
 
         public void DeleteDir(File dir)
@@ -137,11 +137,16 @@ namespace QrData
                 {
                     tempValue = Variable.CurQrCode;
                     tickCount = 0;
+                    if (tempValue != "")
+                    {
+                        var result = MainData.SetData(tempValue);
+                        Instance.OnResult(result);
+                    }
                 }
                 if (tempValue != "")
                 {
                     tickCount++;
-                    if (tickCount == 30)
+                    if (tickCount == 300)
                     {
                         tickCount = 0;
                         Variable.CurQrCode = "";
