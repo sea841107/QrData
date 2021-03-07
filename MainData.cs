@@ -82,17 +82,44 @@ namespace QrData
                 }
                 string month = data.Substring(10 + yearLength, 2);
                 string date = data.Substring(12 + yearLength, 2);
-                string random = data.Substring(14 + yearLength, 4);
-                int price = Convert.ToInt32(data.Substring(26 + yearLength, 8), 16);
-                int unTaxedPrice = (int)MathF.Round(price / 1.05f);
-                int tax = price - unTaxedPrice;
-                string buyerId = data.Substring(34 + yearLength, 8);
-                string sellerId = data.Substring(42 + yearLength, 8);
+
+                string random;
+                int price;
+                int unTaxedPrice;
+                int realUnTaxedPrice;
+                int tax;
+                string buyerId;
+                string sellerId;
+
+                int endIndex = data.IndexOf(":");
+                if (endIndex >= 77)
+                {
+                    random = data.Substring(14 + yearLength, 4);
+                    realUnTaxedPrice = Convert.ToInt32(data.Substring(18 + yearLength, 8), 16);
+                    price = Convert.ToInt32(data.Substring(26 + yearLength, 8), 16);
+                    unTaxedPrice = (int)MathF.Round(price / 1.05f);
+                    tax = price - unTaxedPrice;
+                    buyerId = data.Substring(34 + yearLength, 8);
+                    sellerId = data.Substring(42 + yearLength, 8);
+                }
+                else
+                {
+                    random = "0000";
+                    realUnTaxedPrice = Convert.ToInt32(data.Substring(endIndex - 56, 8), 16);
+                    price = Convert.ToInt32(data.Substring(endIndex - 48, 8), 16);
+                    unTaxedPrice = (int)MathF.Round(price / 1.05f);
+                    tax = price - unTaxedPrice;
+                    buyerId = data.Substring(endIndex - 40, 8);
+                    sellerId = data.Substring(endIndex - 32, 8);
+                }
+                
                 DetailStruct detailStruct = new DetailStruct(year, month, date, random, price, unTaxedPrice, tax, buyerId, sellerId);
                 if (buyerId == Variable.EmptyId)
                     return new Variable.ResultStruct(Variable.ResultType.BuyerIdEmpty, null);
                 if (buyerId != Variable.CurBuyerId)
                     return new Variable.ResultStruct(Variable.ResultType.BuyerIdNotMatch, null);
+                if ((price - realUnTaxedPrice) == 0)
+                    return new Variable.ResultStruct(Variable.ResultType.TaxEqual0, null);
                 if (Variable.Tax500Mode && tax <= Variable.MaxTax)
                     return new Variable.ResultStruct(Variable.ResultType.TaxBelow500, null);
                 else if (!Variable.Tax500Mode && tax > Variable.MaxTax)

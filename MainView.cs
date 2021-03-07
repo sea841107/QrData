@@ -133,6 +133,12 @@ namespace QrData
                     bgColor = Color.Red;
                     shouldSpeak = true;
                     break;
+                case Variable.ResultType.TaxEqual0:
+                    message = "稅額為0";
+                    lengthType = ToastLength.Long;
+                    bgColor = Color.Orange;
+                    shouldSpeak = true;
+                    break;
                 default:
                     message = result.Value;
                     break;
