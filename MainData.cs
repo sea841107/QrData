@@ -91,27 +91,35 @@ namespace QrData
                 string buyerId;
                 string sellerId;
 
-                int endIndex = data.IndexOf(":");
-                if (endIndex >= 77)
-                {
-                    random = data.Substring(14 + yearLength, 4);
-                    realUnTaxedPrice = Convert.ToInt32(data.Substring(18 + yearLength, 8), 16);
-                    price = Convert.ToInt32(data.Substring(26 + yearLength, 8), 16);
-                    unTaxedPrice = (int)MathF.Round(price / 1.05f);
-                    tax = price - unTaxedPrice;
-                    buyerId = data.Substring(34 + yearLength, 8);
-                    sellerId = data.Substring(42 + yearLength, 8);
-                }
-                else
-                {
-                    random = "0000";
-                    realUnTaxedPrice = Convert.ToInt32(data.Substring(endIndex - 56, 8), 16);
-                    price = Convert.ToInt32(data.Substring(endIndex - 48, 8), 16);
-                    unTaxedPrice = (int)MathF.Round(price / 1.05f);
-                    tax = price - unTaxedPrice;
-                    buyerId = data.Substring(endIndex - 40, 8);
-                    sellerId = data.Substring(endIndex - 32, 8);
-                }
+                random = data.Substring(14 + yearLength, 4);
+                realUnTaxedPrice = Convert.ToInt32(data.Substring(18 + yearLength, 8), 16);
+                price = Convert.ToInt32(data.Substring(26 + yearLength, 8), 16);
+                unTaxedPrice = (int)MathF.Round(price / 1.05f);
+                tax = price - unTaxedPrice;
+                buyerId = data.Substring(34 + yearLength, 8);
+                sellerId = data.Substring(42 + yearLength, 8);
+
+                //int endIndex = data.IndexOf("=");
+                //if (endIndex >= 75)
+                //{
+                //    random = data.Substring(14 + yearLength, 4);
+                //    realUnTaxedPrice = Convert.ToInt32(data.Substring(18 + yearLength, 8), 16);
+                //    price = Convert.ToInt32(data.Substring(26 + yearLength, 8), 16);
+                //    unTaxedPrice = (int)MathF.Round(price / 1.05f);
+                //    tax = price - unTaxedPrice;
+                //    buyerId = data.Substring(34 + yearLength, 8);
+                //    sellerId = data.Substring(42 + yearLength, 8);
+                //}
+                //else
+                //{
+                //    random = "0000";
+                //    realUnTaxedPrice = Convert.ToInt32(data.Substring(endIndex - 54, 8), 16);
+                //    price = Convert.ToInt32(data.Substring(endIndex - 46, 8), 16);
+                //    unTaxedPrice = (int)MathF.Round(price / 1.05f);
+                //    tax = price - unTaxedPrice;
+                //    buyerId = data.Substring(endIndex - 38, 8);
+                //    sellerId = data.Substring(endIndex - 30, 8);
+                //}
                 
                 DetailStruct detailStruct = new DetailStruct(year, month, date, random, price, unTaxedPrice, tax, buyerId, sellerId);
                 if (buyerId == Variable.EmptyId)

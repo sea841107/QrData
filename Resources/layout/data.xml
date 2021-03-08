@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/amountLayout"
-        android:layout_marginLeft="40px">
+        android:layout_marginLeft="20px">
         <TextView
             android:text="張數"
             android:layout_width="match_parent"
@@ -65,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/unTaxedLayout"
-        android:layout_marginLeft="90px">
+        android:layout_marginLeft="70px">
         <TextView
             android:text="未稅額"
             android:layout_width="match_parent"
@@ -91,7 +91,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/taxLayout"
-        android:layout_marginLeft="90px">
+        android:layout_marginLeft="70px">
         <TextView
             android:text="稅金"
             android:layout_width="match_parent"

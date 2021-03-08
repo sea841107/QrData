@@ -34,8 +34,7 @@ namespace QrData
             year.Text = item[0].Substring(0, 3) + "年";
             month.Text = item[0][3..] + "月";
             amount.Text = item[1];
-            total.Text = "";
-            totalTitle.Text = "";
+            total.Text = item[2];
             unTaxed.Text = item[3];
             tax.Text = item[4];
             if (item[5] == "True")
