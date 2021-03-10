@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using Android;
 using Android.App;
 using Android.OS;
@@ -60,7 +61,27 @@ namespace QrData
             SparseArray qrcodes = detections.DetectedItems;
             try
             {
-                if (qrcodes.Size() == 2)
+                if (qrcodes.Size() == 1)
+                {
+                    var QRCode = ((Barcode)qrcodes.ValueAt(0)).RawValue;
+                    if (QRCode.Length >= 25)
+                    {
+                        Regex regNumber = new Regex(@"^[0-9]+$");
+                        Regex regAlphabet = new Regex(@"^[A-Z]+$");
+                        string alphabet = QRCode.Substring(0, 2);
+                        string id = QRCode.Substring(2, 8);
+                        if (regAlphabet.IsMatch(alphabet) && regNumber.IsMatch(id))
+                        {
+                            if (QRCode[10] == '1' || (QRCode[10] == '2' && QRCode[11] == '0'))
+                            {
+                                var realData = QRCode;
+                                if (Variable.CurQrCode == realData) return;
+                                Variable.CurQrCode = realData;
+                            }
+                        }
+                    }
+                }
+                else if (qrcodes.Size() == 2)
                 {
                     var QRCode0 = ((Barcode)qrcodes.ValueAt(0)).RawValue;
                     var QRCode1 = ((Barcode)qrcodes.ValueAt(1)).RawValue;
