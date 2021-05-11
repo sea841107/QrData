@@ -86,8 +86,8 @@
             Medium = 1,
             Small = 2
         }
-        readonly public static int FontSizeBig = 20;
-        readonly public static int FontSizeMedium = 17;
-        readonly public static int FontSizeSmall = 14;
+        readonly public static int FontSizeBig = 17;
+        readonly public static int FontSizeMedium = 14;
+        readonly public static int FontSizeSmall = 11;
     }
 }

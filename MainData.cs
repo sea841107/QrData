@@ -92,7 +92,7 @@ namespace QrData
                 string sellerId;
 
                 int endIndex = data.IndexOf("=");
-                if (endIndex >= 75 || endIndex < 0)
+                if (endIndex >= 73 || endIndex < 0)
                 {
                     random = data.Substring(14 + yearLength, 4);
                     realUnTaxedPrice = Convert.ToInt32(data.Substring(18 + yearLength, 8), 16);
