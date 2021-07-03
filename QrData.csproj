@@ -68,7 +68,8 @@
   <ItemGroup>
     <Compile Include="CameraATY.cs" />
     <Compile Include="MainAudio.cs" />
-    <Compile Include="QrDataAdapter.cs" />
+    <Compile Include="DetailAdapter.cs" />
+    <Compile Include="MonthAdapter.cs" />
     <Compile Include="MainView.cs" />
     <Compile Include="Variable.cs" />
     <Compile Include="MainActivity.cs" />
@@ -149,7 +150,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\data.xml">
+    <AndroidResource Include="Resources\layout\monthData.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
@@ -158,6 +159,16 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\raw\wrong.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\detail.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\detailData.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <ProjectExtensions>

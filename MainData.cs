@@ -5,9 +5,10 @@ namespace QrData
 {
     public struct DetailStruct
     {
-        public DetailStruct(string year, string month, string date, string random,
+        public DetailStruct(string name, string year, string month, string date, string random,
             int price, int unTaxedPrice, int tax, string buyerId, string sellerId)
         {
+            Name = name;
             Year = year;
             Month = month;
             Date = date;
@@ -18,13 +19,14 @@ namespace QrData
             BuyerId = buyerId;
             SellerId = sellerId;
         }
+        public string Name { get; set; }
         public string Year { get; }
         public string Month { get; }
         public string Date { get; }
         public string Random { get; }
-        public int Price { get; }
-        public int UnTaxedPrice { get; }
-        public int Tax { get; }
+        public int Price { get; set; }
+        public int UnTaxedPrice { get; set; }
+        public int Tax { get; set; }
         public string BuyerId { get; }
         public string SellerId { get; }
     }
@@ -113,7 +115,7 @@ namespace QrData
                     sellerId = data.Substring(endIndex - 30, 8);
                 }
 
-                DetailStruct detailStruct = new DetailStruct(year, month, date, random, price, unTaxedPrice, tax, buyerId, sellerId);
+                DetailStruct detailStruct = new DetailStruct(uuid, year, month, date, random, price, unTaxedPrice, tax, buyerId, sellerId);
                 if (buyerId == Variable.EmptyId)
                     return new Variable.ResultStruct(Variable.ResultType.BuyerIdEmpty, null);
                 if (buyerId != Variable.CurBuyerId)
@@ -189,7 +191,7 @@ namespace QrData
             return new Variable.ResultStruct(Variable.ResultType.ScanFailed, null);
         }
 
-        public static Variable.ResultStruct ClearData(string key)
+        public static Variable.ResultStruct ClearMonthData(string key)
         {
             MainActivity.Instance.DeleteCache();
             var buyerStruct = BuyerDic[Variable.CurBuyerId];
@@ -204,6 +206,39 @@ namespace QrData
                 return new Variable.ResultStruct(Variable.ResultType.ClearFailed, null);
         }
 
+        public static Variable.ResultStruct ClearDetailData(string key)
+        {
+            MainActivity.Instance.DeleteCache();
+            var buyerStruct = BuyerDic[Variable.CurBuyerId];
+            if (buyerStruct.MonthDic.ContainsKey(Variable.CurDetailMonth))
+            {
+                var monthStruct = buyerStruct.MonthDic[Variable.CurDetailMonth];
+                if (monthStruct.DetailDic.ContainsKey(key))
+                {
+                    var detailStruct = monthStruct.DetailDic[key];
+                    buyerStruct.Amount--;
+                    monthStruct.Amount--;
+                    monthStruct.Price -= detailStruct.Price;
+                    monthStruct.UnTaxedPrice -= detailStruct.UnTaxedPrice;
+                    monthStruct.Tax -= detailStruct.Tax;
+                    monthStruct.DetailDic.Remove(key);
+                    buyerStruct.MonthDic[Variable.CurDetailMonth] = monthStruct;
+                    BuyerDic[Variable.CurBuyerId] = buyerStruct;
+                    if (monthStruct.DetailDic.Count == 0)
+                    {
+                        buyerStruct.MonthDic.Remove(Variable.CurDetailMonth);
+                        if (buyerStruct.MonthDic.Count == 0)
+                            BuyerDic.Remove(Variable.CurBuyerId);
+                    }
+                    return new Variable.ResultStruct(Variable.ResultType.ClearSuccess, null);
+                }
+                else
+                    return new Variable.ResultStruct(Variable.ResultType.ClearFailed, null);
+            }
+            else
+                return new Variable.ResultStruct(Variable.ResultType.ClearFailed, null);
+        }
+
         public static Variable.ResultStruct ClearAllData()
         {
             MainActivity.Instance.DeleteCache();
@@ -211,13 +246,110 @@ namespace QrData
             return new Variable.ResultStruct(Variable.ResultType.ClearSuccess, null);
         }
 
-        public static Dictionary<string, MonthStruct> GetAllData()
+        public static Variable.ResultStruct AddDetailData(string key, string name, int price, int tax)
+        {
+            MainActivity.Instance.DeleteCache();
+            var buyerStruct = BuyerDic[Variable.CurBuyerId];
+            if (buyerStruct.MonthDic.ContainsKey(Variable.CurDetailMonth))
+            {
+                var monthStruct = buyerStruct.MonthDic[Variable.CurDetailMonth];
+                if (!monthStruct.DetailDic.ContainsKey(key))
+                {
+                    string year = Variable.CurDetailMonth.Substring(0, 3);
+                    string month = Variable.CurDetailMonth.Substring(3, 2);
+                    var detailStruct = new DetailStruct(name, year, month, "", "", price, price - tax, tax, Variable.CurBuyerId, "");
+                    buyerStruct.Amount++;
+                    monthStruct.Amount++;
+                    monthStruct.Price += price;
+                    monthStruct.UnTaxedPrice += (price - tax);
+                    monthStruct.Tax += tax;
+                    monthStruct.DetailDic.Add(key, detailStruct);
+                    buyerStruct.MonthDic[Variable.CurDetailMonth] = monthStruct;
+                    BuyerDic[Variable.CurBuyerId] = buyerStruct;
+                    return new Variable.ResultStruct(Variable.ResultType.AddSuccess, null);
+                }
+                else
+                    return new Variable.ResultStruct(Variable.ResultType.AddFailed, null);
+            }
+            else
+                return new Variable.ResultStruct(Variable.ResultType.AddFailed, null);
+        }
+
+
+        public static Variable.ResultStruct ModifyDetailData(string key, string name, int price, int tax)
+        {
+            MainActivity.Instance.DeleteCache();
+            var buyerStruct = BuyerDic[Variable.CurBuyerId];
+            if (buyerStruct.MonthDic.ContainsKey(Variable.CurDetailMonth))
+            {
+                var monthStruct = buyerStruct.MonthDic[Variable.CurDetailMonth];
+                if (monthStruct.DetailDic.ContainsKey(key))
+                {
+                    var detailStruct = monthStruct.DetailDic[key];
+                    monthStruct.Price -= (detailStruct.Price - price);
+                    monthStruct.UnTaxedPrice -= (detailStruct.UnTaxedPrice - (price - tax));
+                    monthStruct.Tax -= (detailStruct.Tax - tax);
+                    detailStruct.Price = price;
+                    detailStruct.UnTaxedPrice = price - tax;
+                    detailStruct.Tax = tax;
+                    detailStruct.Name = name;
+                    monthStruct.DetailDic[key] = detailStruct;
+                    buyerStruct.MonthDic[Variable.CurDetailMonth] = monthStruct;
+                    BuyerDic[Variable.CurBuyerId] = buyerStruct;
+                    return new Variable.ResultStruct(Variable.ResultType.ModifySuccess, null);
+                }
+                else
+                    return new Variable.ResultStruct(Variable.ResultType.ModifyFailed, null);
+            }
+            else
+                return new Variable.ResultStruct(Variable.ResultType.ModifyFailed, null);
+        }
+
+        public static Dictionary<string, DetailStruct> GetMonthData(string month)
+        {
+            if (BuyerDic.ContainsKey(Variable.CurBuyerId))
+            {
+                var buyerStruct = BuyerDic[Variable.CurBuyerId];
+                if (buyerStruct.MonthDic.ContainsKey(month))
+                {
+                    var monthStruct = buyerStruct.MonthDic[month];
+                    return monthStruct.DetailDic;
+                }
+                else
+                    return null;
+            }
+            else
+                return null;
+        }
+
+        public static DetailStruct GetDetailData(string key)
+        {
+            if (BuyerDic.ContainsKey(Variable.CurBuyerId))
+            {
+                var buyerStruct = BuyerDic[Variable.CurBuyerId];
+                if (buyerStruct.MonthDic.ContainsKey(Variable.CurDetailMonth))
+                {
+                    var detailStruct = buyerStruct.MonthDic[Variable.CurDetailMonth];
+                    if (detailStruct.DetailDic.ContainsKey(key))
+                        return detailStruct.DetailDic[key];
+                    else
+                        return new DetailStruct();
+                }
+                else
+                    return new DetailStruct();
+            }
+            else
+                return new DetailStruct();
+        }
+
+        public static Dictionary<string, MonthStruct> GetAllMonthData()
         {
             if (BuyerDic.ContainsKey(Variable.CurBuyerId))
             {
                 var buyerStruct = BuyerDic[Variable.CurBuyerId];
                 return buyerStruct.MonthDic;
-            } else
+            }
+            else
                 return null;
         }
     }

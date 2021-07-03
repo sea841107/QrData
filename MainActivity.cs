@@ -66,7 +66,8 @@ namespace QrData
             Variable.CurFontSize = args.Which;
             Dialog dialog = (Dialog)sender;
             dialog.Dismiss();
-            mainView.UpdateListView();
+            mainView.UpdateMonthView();
+            mainView.UpdateDetailView();
         }
 
         public override void OnBackPressed()
@@ -79,7 +80,7 @@ namespace QrData
             mainView.ShowMessage(result);
             if (result.Type == Variable.ResultType.ScanSuccess || result.Type == Variable.ResultType.TaxOffsetExceed2)
             {
-                mainView.UpdateListView();
+                mainView.UpdateMonthView();
             }
             //mainAudio.PlaySound(result);
         }
@@ -121,6 +122,11 @@ namespace QrData
             {
                 dir.Delete();
             }
+        }
+
+        public void ShowMessage(Variable.ResultType type, string value)
+        {
+            mainView.ShowMessage(new Variable.ResultStruct(type, value));
         }
 
         class Timer : CountDownTimer

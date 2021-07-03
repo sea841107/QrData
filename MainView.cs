@@ -11,13 +11,14 @@ namespace QrData
 {
     public class MainView
     {
-        ListView listView;
-        QrDataAdapter adapter;
+        ListView monthView, detailView;
+        MonthAdapter monthAdapter;
+        DetailAdapter detailAdapter;
         Toast toast;
         public MainView()
         {
             SetupUI();
-            SetupListView();
+            SetupMonthView();
         }
 
         public void ShowMessage(Variable.ResultStruct result)
@@ -52,15 +53,30 @@ namespace QrData
                     bgColor = Color.SeaGreen;
                     shouldSpeak = true;
                     break;
-                case Variable.ResultType.Clear:
+                case Variable.ResultType.ClearMonth:
                     string year = result.Value[..3] + "年";
                     string month = result.Value[3..] + "月";
                     message = year + month + "\n確定要清空此筆資料？";
                     messageType = Variable.MessageType.Dialog;
                     dialogPositive = () =>
                     {
-                        var resultStruct = MainData.ClearData(result.Value);
-                        UpdateListView();
+                        var resultStruct = MainData.ClearMonthData(result.Value);
+                        UpdateMonthView();
+                        ShowMessage(resultStruct);
+                        return null;
+                    };
+                    dialogNagative = () =>
+                    {
+                        return null;
+                    };
+                    break;
+                case Variable.ResultType.ClearDetail:
+                    message = "確定要刪除此筆資料？";
+                    messageType = Variable.MessageType.Dialog;
+                    dialogPositive = () =>
+                    {
+                        var resultStruct = MainData.ClearDetailData(result.Value);
+                        UpdateDetailView();
                         ShowMessage(resultStruct);
                         return null;
                     };
@@ -75,7 +91,7 @@ namespace QrData
                     dialogPositive = () =>
                     {
                         var resultStruct = MainData.ClearAllData();
-                        UpdateListView();
+                        UpdateMonthView();
                         ShowMessage(resultStruct);
                         return null;
                     };
@@ -92,6 +108,32 @@ namespace QrData
                     break;
                 case Variable.ResultType.ClearBeforeEdit:
                     message = "請先清空資料";
+                    break;
+                case Variable.ResultType.AddDetail:
+                    message = "新增資料";
+                    messageType = Variable.MessageType.EditDialog;
+                    break;
+                case Variable.ResultType.AddSuccess:
+                    message = "新增成功";
+                    break;
+                case Variable.ResultType.AddFailed:
+                    message = "新增失敗";
+                    break;
+                case Variable.ResultType.ModifyDetail:
+                    message = "修改資料";
+                    messageType = Variable.MessageType.EditDialog;
+                    break;
+                case Variable.ResultType.ModifySuccess:
+                    message = "修改成功";
+                    break;
+                case Variable.ResultType.ModifyFailed:
+                    message = "修改失敗";
+                    break;
+                case Variable.ResultType.InvalidValue:
+                    message = "值不能為空";
+                    break;
+                case Variable.ResultType.InvalidPriceTax:
+                    message = "稅額大於金額";
                     break;
                 case Variable.ResultType.UuidExist:
                     message = "已掃描過";
@@ -151,6 +193,9 @@ namespace QrData
                 case Variable.MessageType.Dialog:
                     ShowDialog(message, dialogPositive, dialogNagative);
                     break;
+                case Variable.MessageType.EditDialog:
+                    ShowEditDialog(message, result.Value);
+                    break;
                 default:
                     break;
             }
@@ -194,6 +239,103 @@ namespace QrData
             messageText.TextSize = 20;
         }
 
+        public void ShowEditDialog(string message, string value)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.Instance);
+            builder.SetMessage(message);
+            var detailData = MainData.GetDetailData(value);
+            LinearLayout.LayoutParams matchParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
+            LinearLayout.LayoutParams wrapParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent)
+            {
+                LeftMargin = 50
+            };
+            LinearLayout outsideLayout = new LinearLayout(MainActivity.Instance)
+            {
+                LayoutParameters = matchParams,
+                Orientation = Orientation.Vertical
+            };
+            var fontSize = Variable.CurFontSize switch
+            {
+                (int)Variable.FontSize.Big => Variable.FontSizeBig,
+                (int)Variable.FontSize.Medium => Variable.FontSizeMedium,
+                (int)Variable.FontSize.Small => Variable.FontSizeSmall,
+                _ => Variable.FontSizeBig,
+            };
+            var titleArr = new string[3] { "名稱", "金額", "稅金" };
+            var valueArr = new string[3] { "", "0", "0" };
+            if (value != "")
+            {
+                valueArr[0] = detailData.Name;
+                valueArr[1] = detailData.Price.ToString();
+                valueArr[2] = detailData.Tax.ToString();
+            }
+            var editTextArr = new EditText[3];
+            for (int i = 0; i < 3; i++)
+            {
+                LinearLayout insideLayout = new LinearLayout(MainActivity.Instance)
+                {
+                    LayoutParameters = matchParams,
+                    Orientation = Orientation.Horizontal
+                };
+                TextView textView = new TextView(MainActivity.Instance)
+                {
+                    LayoutParameters = wrapParams,
+                    Text = titleArr[i],
+                    TextSize = fontSize,
+                };
+                EditText editText = new EditText(MainActivity.Instance)
+                {
+                    LayoutParameters = wrapParams,
+                    Text = valueArr[i],
+                    TextSize = fontSize,
+                };
+                textView.SetTextColor(Color.Blue);
+                if (i != 0)
+                {
+                    editText.InputType = Android.Text.InputTypes.ClassNumber | Android.Text.InputTypes.NumberFlagSigned;
+                }
+                editTextArr[i] = editText;
+                insideLayout.AddView(textView);
+                insideLayout.AddView(editText);
+                outsideLayout.AddView(insideLayout);
+            }
+            builder.SetPositiveButton("確定", (sender, args) =>
+            {
+                Variable.ResultStruct resultStruct;
+                if (editTextArr[0].Text == "" || editTextArr[1].Text == "" || editTextArr[2].Text == "")
+                {
+                    resultStruct = new Variable.ResultStruct(Variable.ResultType.InvalidValue, "");
+                }
+                else if (Convert.ToInt32(editTextArr[1].Text) < Convert.ToInt32(editTextArr[2].Text))
+                {
+                    resultStruct = new Variable.ResultStruct(Variable.ResultType.InvalidPriceTax, "");
+                }
+                else if (value == "")
+                {
+                    resultStruct = MainData.AddDetailData(editTextArr[0].Text, editTextArr[0].Text,
+                    Convert.ToInt32(editTextArr[1].Text), Convert.ToInt32(editTextArr[2].Text));
+                }
+                else
+                {
+                    resultStruct = MainData.ModifyDetailData(value, editTextArr[0].Text,
+                    Convert.ToInt32(editTextArr[1].Text), Convert.ToInt32(editTextArr[2].Text));
+                }
+                UpdateDetailView();
+                ShowMessage(resultStruct);
+                builder.Dispose();
+            });
+            builder.SetNegativeButton("返回", (sender, args) =>
+            {
+                builder.Dispose();
+            });
+            builder.SetView(outsideLayout);
+            var dialog = builder.Show();
+            TextView messageText = (TextView)dialog.FindViewById(Android.Resource.Id.Message);
+            messageText.TextSize = 20;
+        }
+
         public void ShowChooseFontSize()
         {
             string[] items = new string[3] { "大", "中", "小" };
@@ -209,6 +351,8 @@ namespace QrData
             Button clearButton = MainActivity.Instance.FindViewById<Button>(Resource.Id.clearButton);
             EditText idEditText = MainActivity.Instance.FindViewById<EditText>(Resource.Id.buyerIdText);
             CheckBox tax500CheckBox = MainActivity.Instance.FindViewById<CheckBox>(Resource.Id.tax500CheckBox);
+            idEditText.Text = Variable.CurBuyerId;
+            tax500CheckBox.Checked = Variable.Tax500Mode;
             scanButton.Click += (sender, args) =>
             {
                 if (Variable.CheckIdValid(idEditText.Text))
@@ -258,25 +402,57 @@ namespace QrData
             };
         }
 
-        void SetupListView()
+        void SetupDetailUI()
         {
-            adapter = new QrDataAdapter(MainActivity.Instance, Resource.Id.text);
-            listView = (ListView)MainActivity.Instance.FindViewById(Resource.Id.listView);
-            listView.Adapter = adapter;
-            listView.ItemLongClick += (sender, args) =>
+            Button backButton = MainActivity.Instance.FindViewById<Button>(Resource.Id.backButton);
+            Button addButton = MainActivity.Instance.FindViewById<Button>(Resource.Id.addButton);
+            backButton.Click += (sender, args) =>
             {
-                string id = args.View.Id.ToString();
-                ShowMessage(new Variable.ResultStruct(Variable.ResultType.Clear, id));
+                MainActivity.Instance.SetContentView(Resource.Layout.main);
+                SetupUI();
+                SetupMonthView();
+                UpdateMonthView();
+            };
+            addButton.Click += (sender, args) =>
+            {
+                ShowMessage(new Variable.ResultStruct(Variable.ResultType.AddDetail, ""));
             };
         }
 
-        public void UpdateListView()
+        void SetupMonthView()
         {
-            adapter.Clear();
-            var allData = MainData.GetAllData();
-            if (allData != null)
+            monthAdapter = new MonthAdapter(MainActivity.Instance, Resource.Id.text);
+            monthView = (ListView)MainActivity.Instance.FindViewById(Resource.Id.monthView);
+            monthView.Adapter = monthAdapter;
+            monthView.ItemLongClick += (sender, args) =>
             {
-                foreach (var data in allData.OrderBy(obj => obj.Key))
+                string id = args.View.Id.ToString();
+                ShowMessage(new Variable.ResultStruct(Variable.ResultType.ClearMonth, id));
+            };
+            monthView.ItemClick += (sender, args) =>
+            {
+                string id = args.View.Id.ToString();
+                MainActivity.Instance.SetContentView(Resource.Layout.detail);
+                SetupDetailUI();
+                SetupDetailView();
+                UpdateDetailView(id);
+            };
+        }
+
+        void SetupDetailView()
+        {
+            detailAdapter = new DetailAdapter(MainActivity.Instance, Resource.Id.text);
+            detailView = (ListView)MainActivity.Instance.FindViewById(Resource.Id.detailView);
+            detailView.Adapter = detailAdapter;
+        }
+
+        public void UpdateMonthView()
+        {
+            monthAdapter.Clear();
+            var allMonthData = MainData.GetAllMonthData();
+            if (allMonthData != null)
+            {
+                foreach (var data in allMonthData.OrderBy(obj => obj.Key))
                 {
                     string[] dataStr = new string[6];
                     dataStr[0] = data.Key.ToString();
@@ -285,7 +461,37 @@ namespace QrData
                     dataStr[3] = data.Value.UnTaxedPrice.ToString();
                     dataStr[4] = data.Value.Tax.ToString();
                     dataStr[5] = data.Value.ToLimit.ToString();
-                    adapter.Add(dataStr);
+                    monthAdapter.Add(dataStr);
+                }
+            }
+        }
+
+        public void UpdateDetailView(string month = "")
+        {
+            if (month == "")
+            {
+                month = Variable.CurDetailMonth;
+                if (month == "")
+                {
+                    return;
+                }
+            }
+            Variable.CurDetailMonth = month;
+
+            detailAdapter.Clear();
+            var detailData = MainData.GetMonthData(month);
+            if (detailData != null)
+            {
+                foreach (var data in detailData.OrderBy(obj => obj.Value.Date))
+                {
+                    string[] dataStr = new string[6];
+                    dataStr[0] = data.Key.ToString();
+                    dataStr[1] = data.Value.Name;
+                    dataStr[2] = month + data.Value.Date;
+                    dataStr[3] = data.Value.Price.ToString();
+                    dataStr[4] = data.Value.UnTaxedPrice.ToString();
+                    dataStr[5] = data.Value.Tax.ToString();
+                    detailAdapter.Add(dataStr);
                 }
             }
         }

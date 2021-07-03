@@ -6,9 +6,9 @@ using Android.Graphics;
 
 namespace QrData
 {
-    public class QrDataAdapter : ArrayAdapter
+    public class MonthAdapter : ArrayAdapter
     {
-        public QrDataAdapter(Context context, int textViewResourceId) : base(context, textViewResourceId)
+        public MonthAdapter(Context context, int textViewResourceId) : base(context, textViewResourceId)
         {
         }
 
@@ -17,7 +17,7 @@ namespace QrData
             string[] item = (string[])GetItem(position);
             if (convertView == null)
             {
-                convertView = LayoutInflater.From(Context).Inflate(Resource.Layout.data, parent, false);
+                convertView = LayoutInflater.From(Context).Inflate(Resource.Layout.monthData, parent, false);
             }
             TextView year = (TextView)convertView.FindViewById(Resource.Id.yearText);
             TextView month = (TextView)convertView.FindViewById(Resource.Id.monthText);

@@ -5,6 +5,7 @@
         public static int CurFontSize = 0;
         public static string CurBuyerId = ""; // 輸入的統編
         public static string CurQrCode = "";
+        public static string CurDetailMonth = "";
         public static bool Tax500Mode = false; // 稅金500元以上模式
         readonly public static string EmptyId = "00000000"; // 空白統編
         readonly public static int MaxTax = 500; // 最大稅額
@@ -46,11 +47,20 @@
             LeaveApp,
             ScanSuccess,
             ScanFailed,
-            Clear,
+            ClearMonth,
+            ClearDetail,
             ClearAll,
             ClearSuccess,
             ClearFailed,
             ClearBeforeEdit,
+            AddDetail,
+            AddSuccess,
+            AddFailed,
+            ModifyDetail,
+            ModifySuccess,
+            ModifyFailed,
+            InvalidValue,
+            InvalidPriceTax,
             UuidExist, // 發票已存在
             BuyerIdUnvalid, // 無效的統編
             BuyerIdEmpty, // 發票無買方統編
@@ -65,6 +75,7 @@
         {
             Toast,
             Dialog,
+            EditDialog,
         }
 
         public enum RequestCode
