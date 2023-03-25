@@ -133,7 +133,7 @@ namespace QrData
                     message = "值不能為空";
                     break;
                 case Variable.ResultType.InvalidPriceTax:
-                    message = "稅額大於金額";
+                    message = "稅金大於總額";
                     break;
                 case Variable.ResultType.UuidExist:
                     message = "已掃描過";
@@ -164,7 +164,7 @@ namespace QrData
                     shouldSpeak = true;
                     break;
                 case Variable.ResultType.TaxBelow500:
-                    message = "500元以下";
+                    message = "稅金" + result.Value;
                     lengthType = ToastLength.Long;
                     bgColor = Color.Purple;
                     shouldSpeak = true;
@@ -263,16 +263,16 @@ namespace QrData
                 (int)Variable.FontSize.Small => Variable.FontSizeSmall,
                 _ => Variable.FontSizeBig,
             };
-            var titleArr = new string[3] { "名稱", "金額", "稅金" };
-            var valueArr = new string[3] { "", "0", "0" };
+            var titleArr = new string[2] { "總額", "稅金" };
+            var valueArr = new string[2] { "", "" };
             if (value != "")
             {
-                valueArr[0] = detailData.Name;
-                valueArr[1] = detailData.Price.ToString();
-                valueArr[2] = detailData.Tax.ToString();
+                // valueArr[0] = detailData.Name;
+                valueArr[0] = detailData.Price.ToString();
+                valueArr[1] = detailData.Tax.ToString();
             }
             var editTextArr = new EditText[3];
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < titleArr.Length; i++)
             {
                 LinearLayout insideLayout = new LinearLayout(MainActivity.Instance)
                 {
@@ -291,6 +291,15 @@ namespace QrData
                     Text = valueArr[i],
                     TextSize = fontSize,
                 };
+                if (i == 0)
+                {
+                    // 輸入總額時 會自動產生稅金
+                    editText.AfterTextChanged += (sender, args) =>
+                    {
+                        editTextArr[1].Text = Math.Round(Convert.ToInt32(editText.Text) * 0.05).ToString().Split('.')[0];
+                    };
+                }
+                
                 textView.SetTextColor(Color.Blue);
                 if (i != 0)
                 {
@@ -304,18 +313,17 @@ namespace QrData
             builder.SetPositiveButton("確定", (sender, args) =>
             {
                 Variable.ResultStruct resultStruct;
-                if (editTextArr[0].Text == "" || editTextArr[1].Text == "" || editTextArr[2].Text == "")
+                if (editTextArr[0].Text == "" || editTextArr[1].Text == "")
                 {
                     resultStruct = new Variable.ResultStruct(Variable.ResultType.InvalidValue, "");
                 }
-                else if (Convert.ToInt32(editTextArr[1].Text) < Convert.ToInt32(editTextArr[2].Text))
+                else if (Convert.ToInt32(editTextArr[0].Text) < Convert.ToInt32(editTextArr[1].Text))
                 {
                     resultStruct = new Variable.ResultStruct(Variable.ResultType.InvalidPriceTax, "");
                 }
                 else if (value == "")
                 {
-                    resultStruct = MainData.AddDetailData(editTextArr[0].Text, editTextArr[0].Text,
-                    Convert.ToInt32(editTextArr[1].Text), Convert.ToInt32(editTextArr[2].Text));
+                    resultStruct = MainData.AddDetailData(Convert.ToInt32(editTextArr[0].Text), Convert.ToInt32(editTextArr[1].Text));
                 }
                 else
                 {

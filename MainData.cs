@@ -115,6 +115,12 @@ namespace QrData
                     sellerId = data.Substring(endIndex - 30, 8);
                 }
 
+                if (Variable.Tax500Mode)
+                {
+                    unTaxedPrice = realUnTaxedPrice;
+                    tax = price - unTaxedPrice;
+                }
+
                 DetailStruct detailStruct = new DetailStruct(uuid, year, month, date, random, price, unTaxedPrice, tax, buyerId, sellerId);
                 if (buyerId == Variable.EmptyId)
                     return new Variable.ResultStruct(Variable.ResultType.BuyerIdEmpty, null);
@@ -123,7 +129,7 @@ namespace QrData
                 if ((price - realUnTaxedPrice) == 0)
                     return new Variable.ResultStruct(Variable.ResultType.TaxEqual0, null);
                 if (Variable.Tax500Mode && tax <= Variable.MaxTax)
-                    return new Variable.ResultStruct(Variable.ResultType.TaxBelow500, null);
+                    return new Variable.ResultStruct(Variable.ResultType.TaxBelow500, tax.ToString());
                 else if (!Variable.Tax500Mode && tax > Variable.MaxTax)
                     return new Variable.ResultStruct(Variable.ResultType.TaxExceed500, null);
                 if (BuyerDic.ContainsKey(buyerId))
@@ -246,9 +252,12 @@ namespace QrData
             return new Variable.ResultStruct(Variable.ResultType.ClearSuccess, null);
         }
 
-        public static Variable.ResultStruct AddDetailData(string key, string name, int price, int tax)
+        public static Variable.ResultStruct AddDetailData(int price, int tax)
         {
             MainActivity.Instance.DeleteCache();
+            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string key = timestamp;
+            string name = timestamp;
             var buyerStruct = BuyerDic[Variable.CurBuyerId];
             if (buyerStruct.MonthDic.ContainsKey(Variable.CurDetailMonth))
             {
