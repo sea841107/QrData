@@ -1,1 +1,1 @@
-# scan QrCode to analytic data
+# scan QrCode to analyze data
